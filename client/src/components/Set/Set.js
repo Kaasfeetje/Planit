@@ -1,8 +1,40 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import Task from "../Task/Task";
+import SetModal from "./SetModal";
+
+const useStyles = makeStyles((theme) => ({
+    set: {
+        minWidth: "20%",
+        margin: "0.5rem",
+        overflow: "hidden",
+        overflowY: "scroll",
+        backgroundColor: "#fff",
+        color: "rgba(0,0,0,0.87)",
+        border: "1px solid gray",
+        borderRadius: "0.25rem",
+    },
+    setTitle: {
+        padding: "0.5rem",
+        textAlign: "center",
+        borderBottom: "1px solid gray",
+        overflow: "hidden",
+    },
+    setAddBtn: {
+        display: "flex",
+        justifyContent: "center",
+    },
+    setAddInput: {
+        width: "100%",
+        fontSize: "larger",
+        padding: "0.25rem",
+        textAlign: "center",
+    },
+}));
 
 function Set({ set, onDragStart, onDragEnd, onDrop }) {
+    const classes = useStyles();
+
     const [tasks, setTasks] = useState([
         { task: "Banana", set: set.id, index: 0, id: 0 },
         { task: "Apple", set: set.id, index: 1, id: 1 },
@@ -15,6 +47,8 @@ function Set({ set, onDragStart, onDragEnd, onDrop }) {
     const [dragging, setDragging] = useState(undefined);
     const [addingTask, setAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
+
+    const [setModalOpen, setSetModalOpen] = useState(false);
 
     const dropHandler = (task) => {
         if (!dragging) return;
@@ -57,14 +91,23 @@ function Set({ set, onDragStart, onDragEnd, onDrop }) {
 
     return (
         <div
-            className="set"
+            className={classes.set}
             draggable
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
         >
-            <Typography className="set-title" variant="h6">
+            <SetModal
+                open={setModalOpen}
+                onClose={() => setSetModalOpen(false)}
+                set={set}
+            />
+            <Typography
+                className={`${classes.setTitle} clickable`}
+                variant="h6"
+                onClick={() => setSetModalOpen(true)}
+            >
                 {set.name}
             </Typography>
             <div>
@@ -95,9 +138,9 @@ function Set({ set, onDragStart, onDragEnd, onDrop }) {
                         <input
                             value={newTask}
                             onChange={(e) => setNewTask(e.target.value)}
-                            className="set-add-input"
+                            className={classes.setAddInput}
                         ></input>
-                        <div className="set-add-btn">
+                        <div className={classes.setAddBtn}>
                             <Button
                                 type="submit"
                                 variant="contained"
@@ -108,7 +151,7 @@ function Set({ set, onDragStart, onDragEnd, onDrop }) {
                         </div>
                     </form>
                 ) : (
-                    <div className="set-add-btn">
+                    <div className={classes.setAddBtn}>
                         <Button
                             variant="contained"
                             color="primary"

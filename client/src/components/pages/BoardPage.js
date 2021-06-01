@@ -1,7 +1,7 @@
-import { Container, Typography } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Board from "../Board/Board";
-import Header from "../Header";
+import Header from "../common/Header";
 
 function BoardPage({ match }) {
     const [board, setBoard] = useState({});
@@ -23,10 +23,7 @@ function BoardPage({ match }) {
         <div>
             <Header />
             <Container>
-                <Typography variant="h6" color="textPrimary" component="p">
-                    {board.name}
-                </Typography>
-                <Board />
+                <Board board={board} />
             </Container>
         </div>
     );

@@ -6,3 +6,7 @@
 body {
     background-color: #fafafa;
 }
+
+.clickable {
+    cursor: pointer;
+}

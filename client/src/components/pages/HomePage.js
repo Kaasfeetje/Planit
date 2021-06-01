@@ -1,7 +1,7 @@
 import { Container, Grid } from "@material-ui/core";
 import React from "react";
 import BoardCard from "../Board/BoardCard";
-import Header from "../Header";
+import Header from "../common/Header";
 
 function HomePage() {
     return (
