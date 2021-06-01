@@ -1,0 +1,52 @@
+.set-container {
+    width: 100%;
+    height: calc(100vh - 100px);
+    display: flex;
+    overflow-x: scroll;
+
+    border-radius: 0.5rem;
+}
+
+.set {
+    min-width: 20%;
+    margin: 0.5rem;
+
+    overflow: hidden;
+    overflow-y: scroll;
+
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.87);
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+}
+
+.set-title {
+    padding: 0.5rem;
+    text-align: center;
+    border-bottom: 1px solid gray;
+    overflow: hidden;
+}
+
+.set-add-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.set-add-input {
+    width: 100%;
+    font-size: larger;
+    padding: 0.25rem;
+    text-align: center;
+}
+
+.add-set {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.add-set-button {
+    /* width: 100%; */
+    overflow: hidden;
+}
