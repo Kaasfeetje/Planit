@@ -5,7 +5,7 @@ interface BoardAttrs {
     image: string;
     description?: string;
     goal?: string;
-    owner: string;
+    ownerRef: string;
 }
 
 interface BoardDoc extends mongoose.Document {

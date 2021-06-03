@@ -6,8 +6,8 @@ interface SetAttrs {
     isCompleted?: boolean;
     projectedAt?: Date;
     index: number;
-    board: string;
-    owner: string;
+    boardRef: string;
+    ownerRef: string;
 }
 
 interface SetDoc extends mongoose.Document {

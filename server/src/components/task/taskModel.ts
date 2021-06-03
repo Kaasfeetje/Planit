@@ -7,9 +7,9 @@ interface TaskAttrs {
     projectedAt?: Date;
     finishedAt?: Date;
     index: number;
-    board: string;
-    set: string;
-    owner: string;
+    boardRef: string;
+    setRef: string;
+    ownerRef: string;
 }
 
 interface TaskDoc extends mongoose.Document {
