@@ -76,7 +76,6 @@ export const deleteBoard = async (req: Request, res: Response) => {
 
 export const getMyBoards = async (req: Request, res: Response) => {
     //TODO: Add joined boards
-    console.log(req.currentUser);
     const boards = await Board.find({ ownerRef: req.currentUser!.id });
 
     res.status(200).send({ data: boards });

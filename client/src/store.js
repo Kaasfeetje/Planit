@@ -5,17 +5,28 @@ import { userLoginReducer, userSignupReducer } from "./reducers/userReducers";
 import {
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
+    updateBoardReducer,
 } from "./reducers/boardReducers";
-import { createTaskReducer, tasksReducer, updateTaskReducer } from "./reducers/taskReducers";
-import { createSetReducer, setsReducer } from "./reducers/setReducers";
+import {
+    createTaskReducer,
+    tasksReducer,
+    updateTaskReducer,
+} from "./reducers/taskReducers";
+import {
+    createSetReducer,
+    setsReducer,
+    updateSetReducer,
+} from "./reducers/setReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userSignup: userSignupReducer,
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
+    updateBoard: updateBoardReducer,
     sets: setsReducer,
     createSet: createSetReducer,
+    updateSet: updateSetReducer,
     tasks: tasksReducer,
     createTask: createTaskReducer,
     updateTask: updateTaskReducer,

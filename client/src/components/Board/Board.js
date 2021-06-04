@@ -96,6 +96,7 @@ function Board({ board, match }) {
             <BoardModal
                 open={boardModalOpen}
                 onClose={() => setBoardModalOpen(false)}
+                board={board}
             />
             <Typography
                 variant="h6"

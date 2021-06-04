@@ -6,6 +6,8 @@ import {
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_SET_FAIL,
     SWAP_SET_REQUEST,
+    UPDATE_SET_FAIL,
+    UPDATE_SET_REQUEST,
     UPDATE_SET_SUCCESS,
 } from "../actions/types";
 
@@ -63,6 +65,21 @@ export const createSetReducer = (state = {}, action) => {
         case CREATE_SET_SUCCESS:
             return { loading: false, set: action.payload };
         case CREATE_SET_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const updateSetReducer = (state = {}, action) => {
+    switch (action.type) {
+        case UPDATE_SET_REQUEST:
+            return {
+                loading: true,
+            };
+        case UPDATE_SET_SUCCESS:
+            return { loading: false, set: action.payload };
+        case UPDATE_SET_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;
