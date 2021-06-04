@@ -1,5 +1,7 @@
 import { Button, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createSetAction, swapSetsAction } from "../../actions/setActions";
 import Set from "../Set/Set";
 import BoardModal from "./BoardModal";
 
@@ -42,25 +44,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Board({ board }) {
+function Board({ board, match }) {
     const classes = useStyles();
 
-    const [sets, setSets] = useState([
-        { id: 0, name: "set0", index: 0 },
-        { id: 1, name: "set1", index: 1 },
-        { id: 2, name: "set2", index: 2 },
-        { id: 3, name: "set3", index: 3 },
-        { id: 4, name: "set4", index: 4 },
-        { id: 5, name: "set5", index: 5 },
-        { id: 6, name: "set6", index: 6 },
-        { id: 7, name: "set7", index: 7 },
-        { id: 8, name: "set8", index: 8 },
-    ]);
     const [dragging, setDragging] = useState(undefined);
     const [addingSet, setAddingSet] = useState(false);
     const [newSet, setNewSet] = useState("");
 
     const [boardModalOpen, setBoardModalOpen] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const _sets = useSelector((state) => state.sets);
+    const { sets } = _sets;
+
+    const _tasks = useSelector((state) => state.tasks);
+    const { tasks } = _tasks;
 
     const ref = useRef();
 
@@ -81,37 +80,13 @@ function Board({ board }) {
 
     const dropHandler = (set) => {
         if (!dragging) return;
-        const dragIndex = dragging.index;
-        const targetIndex = set.index;
-
-        const newSets = sets
-            .map((s) => {
-                if (s.id === set.id) {
-                    s.index = dragIndex;
-                } else if (s.id === dragging.id) {
-                    s.index = targetIndex;
-                }
-                return s;
-            })
-            .sort((a, b) => a.index - b.index);
-
-        setSets(newSets.sort((s) => s.index));
+        dispatch(swapSetsAction(dragging.id, set.id));
     };
 
     const onAddSet = (e) => {
         e.preventDefault();
-        //TODO: add task database
-
-        if (newSet !== "") {
-            setSets([
-                ...sets,
-                {
-                    name: newSet,
-                    index: sets.length + 1,
-                    id: sets.length + 1,
-                },
-            ]);
-        }
+        if (newSet === "") return;
+        dispatch(createSetAction(newSet, sets.length, match.params.boardId));
         setAddingSet(false);
         setNewSet("");
     };
@@ -142,6 +117,7 @@ function Board({ board }) {
                     <Set
                         key={set.id}
                         set={set}
+                        tasks={tasks.filter((task) => task.setRef === set.id)}
                         onDragStart={() => setDragging(set)}
                         onDragEnd={() => setDragging(undefined)}
                         onDrop={() => dropHandler(set)}

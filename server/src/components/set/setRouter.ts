@@ -6,10 +6,13 @@ import {
     deleteSet,
     getSetById,
     getSets,
+    swapSets,
     updateSet,
 } from "./setController";
 
 const router = express.Router();
+
+router.post("/swap", currentUser, requireAuth, swapSets);
 
 router.route("/").all(currentUser, requireAuth).get(getSets).post(createSet);
 router

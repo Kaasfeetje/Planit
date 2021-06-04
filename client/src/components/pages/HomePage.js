@@ -1,58 +1,34 @@
-import { Container, Grid } from "@material-ui/core";
-import React from "react";
+import { CircularProgress, Container, Grid } from "@material-ui/core";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import BoardCard from "../Board/BoardCard";
 import Header from "../common/Header";
-
+import { fetchMyBoardsAction } from "../../actions/boardActions";
 function HomePage() {
+    const dispatch = useDispatch();
+
+    const fetchMyBoards = useSelector((state) => state.fetchMyBoards);
+    const { loading, boards } = fetchMyBoards;
+
+    useEffect(() => {
+        dispatch(fetchMyBoardsAction());
+    }, [dispatch]);
+
+    const renderedBoards =
+        boards &&
+        boards.map((board) => (
+            <Grid key={board.id} item xs={12} md={6} lg={4} xl={3}>
+                <BoardCard board={board} />
+            </Grid>
+        ));
+
     return (
         <div>
             <Header />
             <Container>
+                {loading && <CircularProgress />}
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={6} lg={4} xl={3}>
-                        <BoardCard
-                            board={{
-                                id: "1",
-                                name: "Project 1",
-                                description:
-                                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
-                                image: "https://via.placeholder.com/255x140",
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} xl={3}>
-                        <BoardCard
-                            board={{
-                                id: "2",
-                                name: "Project 2",
-                                description:
-                                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
-                                image: "https://via.placeholder.com/255x140",
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} xl={3}>
-                        <BoardCard
-                            board={{
-                                id: "3",
-                                name: "Project 3",
-                                description:
-                                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
-                                image: "https://via.placeholder.com/255x140",
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={4} xl={3}>
-                        <BoardCard
-                            board={{
-                                id: "4",
-                                name: "Project 4",
-                                description:
-                                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.",
-                                image: "https://via.placeholder.com/255x140",
-                            }}
-                        />
-                    </Grid>
+                    {renderedBoards}
                 </Grid>
             </Container>
         </div>

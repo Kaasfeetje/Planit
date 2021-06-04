@@ -1,10 +1,13 @@
 import { Button, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createTaskAction, swapTasksAction } from "../../actions/taskActions";
 import Task from "../Task/Task";
 import SetModal from "./SetModal";
 
 const useStyles = makeStyles((theme) => ({
     set: {
+        width: "300px",
         minWidth: "20%",
         margin: "0.5rem",
         overflow: "hidden",
@@ -32,59 +35,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Set({ set, onDragStart, onDragEnd, onDrop }) {
+function Set({ set, tasks, onDragStart, onDragEnd, onDrop }) {
     const classes = useStyles();
-
-    const [tasks, setTasks] = useState([
-        { task: "Banana", set: set.id, index: 0, id: 0 },
-        { task: "Apple", set: set.id, index: 1, id: 1 },
-        { task: "Pear", set: set.id, index: 2, id: 2 },
-        { task: "Nuts", set: set.id, index: 3, id: 3 },
-        { task: "Tomatoe", set: set.id, index: 4, id: 4 },
-        { task: "Cellery", set: set.id, index: 5, id: 5 },
-        { task: "Butter", set: set.id, index: 6, id: 6 },
-    ]);
     const [dragging, setDragging] = useState(undefined);
     const [addingTask, setAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
-
     const [setModalOpen, setSetModalOpen] = useState(false);
+
+    const dispatch = useDispatch();
 
     const dropHandler = (task) => {
         if (!dragging) return;
-
-        const dragIndex = dragging.index;
-        const targetIndex = task.index;
-
-        const newTasks = tasks
-            .map((t) => {
-                if (t.id === task.id) {
-                    t.index = dragIndex;
-                } else if (t.id === dragging.id) {
-                    t.index = targetIndex;
-                }
-                return t;
-            })
-            .sort((a, b) => a.index - b.index);
-
-        setTasks(newTasks.sort((t) => t.index));
+        dispatch(swapTasksAction(dragging.id, task.id));
     };
 
     const onAddTask = (e) => {
         e.preventDefault();
-        //TODO: add task database
+        if (newTask === "") return;
 
-        if (newTask !== "") {
-            setTasks([
-                ...tasks,
-                {
-                    task: newTask,
-                    set: set.id,
-                    index: tasks.length + 1,
-                    id: tasks.length + 1,
-                },
-            ]);
-        }
+        dispatch(createTaskAction(newTask, tasks.length, set.boardRef, set.id));
         setAddingTask(false);
         setNewTask("");
     };

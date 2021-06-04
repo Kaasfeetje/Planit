@@ -77,3 +77,20 @@ export const deleteTask = async (req: Request, res: Response) => {
     await task.remove();
     res.status(200).send({ data: {} });
 };
+
+export const swapTasks = async (req: Request, res: Response) => {
+    const { taskAId, taskBId } = req.body;
+    const a = await Task.findById(taskAId);
+    const b = await Task.findById(taskBId);
+
+    if (!a || !b)
+        throw new NotFoundError("Did not find one or both of the tasks");
+
+    const aIndex = a.index;
+    a.index = b.index;
+    b.index = aIndex;
+    await a.save();
+    await b.save();
+
+    res.status(200).send({ data: { a: a.id, b: b.id } });
+};

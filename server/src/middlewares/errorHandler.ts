@@ -25,7 +25,7 @@ const errorHandler = (
 
         return res.status(400).send({ message: errors.join(" ") });
     }
-
+    // console.log(Object.keys(err));
     console.log(err);
 
     res.status(500).send({ message: "Something went wrong." });

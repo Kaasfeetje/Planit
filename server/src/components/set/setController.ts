@@ -70,3 +70,20 @@ export const deleteSet = async (req: Request, res: Response) => {
     await set.remove();
     res.status(200).send({ data: {} });
 };
+
+export const swapSets = async (req: Request, res: Response) => {
+    const { setAId, setBId } = req.body;
+    const a = await Set.findById(setAId);
+    const b = await Set.findById(setBId);
+
+    if (!a || !b)
+        throw new NotFoundError("Did not find one or both of the tasks");
+
+    const aIndex = a.index;
+    a.index = b.index;
+    b.index = aIndex;
+    await a.save();
+    await b.save();
+
+    res.status(200).send({ data: { a: a.id, b: b.id } });
+};

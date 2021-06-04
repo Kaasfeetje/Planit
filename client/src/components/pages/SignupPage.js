@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../common/Header";
-import { loginAction, signupAction } from "../../actions/userActions";
+import { signupAction } from "../../actions/userActions";
 import { history } from "../../history";
 import { USER_LOGIN_RESET } from "../../actions/types";
 

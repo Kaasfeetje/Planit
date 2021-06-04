@@ -1,29 +1,31 @@
-import { Container } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import { CircularProgress, Container } from "@material-ui/core";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Board from "../Board/Board";
 import Header from "../common/Header";
+import { fetchFullBoardAction } from "../../actions/boardActions";
+import { FETCH_FULL_BOARD_RESET } from "../../actions/types";
 
 function BoardPage({ match }) {
-    const [board, setBoard] = useState({});
+    const dispatch = useDispatch();
+
+    const fetchFullBoard = useSelector((state) => state.fetchFullBoard);
+    const { loading, board } = fetchFullBoard;
 
     useEffect(() => {
-        setBoard({
-            id: match.params.boardId,
-            name: `Project ${match.params.boardId}`,
-            description: "Project description",
-            image: "https://via.placeholder.com/255x140",
-        });
-    }, [match]);
+        dispatch(fetchFullBoardAction(match.params.boardId));
 
-    if (!board) {
-        return <div>Loading...</div>;
-    }
+        return () => {
+            dispatch({ type: FETCH_FULL_BOARD_RESET });
+        };
+    }, [dispatch, match.params]);
 
     return (
         <div>
             <Header />
             <Container>
-                <Board board={board} />
+                {loading && <CircularProgress />}
+                {board && <Board board={board} match={match} />}
             </Container>
         </div>
     );

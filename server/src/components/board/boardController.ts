@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
+import { Set } from "../set/setModel";
+import { Task } from "../task/taskModel";
 import { Board } from "./boardModel";
 
 export const GetBoards = async (req: Request, res: Response) => {
@@ -44,9 +46,6 @@ export const UpdateBoard = async (req: Request, res: Response) => {
             `Did not find a board with id: ${req.params.boardId}`
         );
 
-    console.log(board.ownerRef);
-    console.log(req.currentUser!.id);
-
     if (!req.currentUser!.isAdmin && board.ownerRef != req.currentUser!.id)
         throw new NotAuthorizedError("You do not own this board.");
 
@@ -73,4 +72,26 @@ export const deleteBoard = async (req: Request, res: Response) => {
 
     await board.remove();
     res.status(200).send({ data: {} });
+};
+
+export const getMyBoards = async (req: Request, res: Response) => {
+    //TODO: Add joined boards
+    console.log(req.currentUser);
+    const boards = await Board.find({ ownerRef: req.currentUser!.id });
+
+    res.status(200).send({ data: boards });
+};
+
+export const getFullBoardById = async (req: Request, res: Response) => {
+    const board = await Board.findById(req.params.boardId).populate("ownerRef");
+
+    if (!board)
+        throw new NotFoundError(
+            `Did not find a board with id: ${req.params.boardId}`
+        );
+
+    const sets = await Set.find({ boardRef: board.id }).populate("ownerRef");
+    const tasks = await Task.find({ boardRef: board.id }).populate("ownerRef");
+
+    res.status(200).send({ data: { board, sets, tasks } });
 };
