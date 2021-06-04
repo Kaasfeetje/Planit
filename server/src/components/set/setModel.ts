@@ -42,6 +42,9 @@ const setSchema = new mongoose.Schema(
         finishedAt: {
             type: Date,
         },
+        projectedAt: {
+            type: Date,
+        },
         index: {
             type: Number,
             required: [true, "Please provide the index of this set."],
@@ -69,7 +72,7 @@ const setSchema = new mongoose.Schema(
 );
 
 setSchema.statics.build = (attrs: SetAttrs) => {
-    return new Set();
+    return new Set(attrs);
 };
 
 const Set = mongoose.model<SetDoc, SetModel>("Set", setSchema);
