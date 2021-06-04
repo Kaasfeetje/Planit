@@ -17,6 +17,7 @@ interface TaskDoc extends mongoose.Document {
     description: string;
     isCompleted: boolean;
     projectedAt: Date;
+    finishedAt: Date | undefined;
     index: number;
     boardRef: string;
     setRef: string;
@@ -42,6 +43,9 @@ const taskSchema = new mongoose.Schema(
             default: false,
         },
         projectedAt: {
+            type: Date,
+        },
+        finishedAt: {
             type: Date,
         },
         index: {
