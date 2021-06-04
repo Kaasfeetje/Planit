@@ -6,11 +6,13 @@ import {
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_SET_FAIL,
     SWAP_SET_REQUEST,
+    UPDATE_SET_SUCCESS,
 } from "../actions/types";
 
 export const setsReducer = (state = { sets: [] }, action) => {
     let newSets;
     switch (action.type) {
+        //FETCH SETS
         case FETCH_FULL_BOARD_SUCCESS:
             newSets = [];
             if (state.sets.length !== 0) {
@@ -24,9 +26,13 @@ export const setsReducer = (state = { sets: [] }, action) => {
             return {
                 sets: newSets.sort((a, b) => a.index - b.index),
             };
+
+        //CREATE SET
         case CREATE_SET_SUCCESS:
             newSets = [action.payload, ...state.sets];
             return { sets: newSets.sort((a, b) => a.index - b.index) };
+
+        //SWAP SETS
         case SWAP_SET_REQUEST:
             newSets = swapSets(state.sets, action.payload.a, action.payload.b);
 
@@ -34,6 +40,13 @@ export const setsReducer = (state = { sets: [] }, action) => {
         case SWAP_SET_FAIL:
             return { sets: state.beforeSwap, beforeSwap: undefined };
 
+        //UPDATE SET
+        case UPDATE_SET_SUCCESS:
+            newSets = state.sets.filter((set) => set.id !== action.payload.id);
+            newSets.push(action.payload);
+            return { sets: newSets.sort((a, b) => a.index - b.index) };
+
+        //RESET
         case FETCH_FULL_BOARD_RESET:
             return { sets: [] };
         default:

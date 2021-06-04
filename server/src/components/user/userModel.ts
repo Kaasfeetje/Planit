@@ -9,7 +9,7 @@ interface UserAttrs {
     isAdmin?: boolean;
 }
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
     username: string;
     profilePicture: string;
     email: string;

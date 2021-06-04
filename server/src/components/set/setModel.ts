@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { UserDoc } from "../user/userModel";
 
 interface SetAttrs {
     name: string;
@@ -14,11 +15,11 @@ interface SetDoc extends mongoose.Document {
     name: string;
     description: string;
     isCompleted: boolean;
-    finishedAt: Date;
+    finishedAt: Date | undefined;
     projectedAt: Date;
     index: number;
     boardRef: string;
-    ownerRef: string;
+    ownerRef: string | UserDoc;
 }
 
 interface SetModel extends mongoose.Model<SetDoc> {

@@ -4,15 +4,15 @@ import {
     Checkbox,
     Fade,
     makeStyles,
-    Menu,
-    MenuItem,
     Modal,
     TextField,
     Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import ResponsibilityCard from "../common/ResponsibilityCard";
+import { useDispatch } from "react-redux";
 import UserCard from "../common/UserCard";
+import SetResponsibility from "./SetResponsibility";
+import { updateSetAction } from "../../actions/setActions";
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -34,9 +34,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         width: "100%",
     },
-    responsibilityTag: {
-        marginLeft: "1rem",
-    },
     left: {
         width: "100%",
     },
@@ -49,26 +46,12 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
     },
-    center: {
-        display: "flex",
-        justifyContent: "center",
-    },
 }));
 
-function SetModal({ open, onClose }) {
+function SetModal({ open, onClose, set }) {
     const classes = useStyles();
 
-    const [setDetails, setSetDetails] = useState({
-        name: "Set 1",
-        description: "This set is for the minimal requirements",
-        isCompleted: false,
-        projectedAt: new Date(Date.now()),
-        owner: {
-            id: "1",
-            username: "Jane",
-            email: "Jane@example.com",
-            profileImage: "https://via.placeholder.com/255x255",
-        },
+    const [setDetails] = useState({
         responsibilities: [
             {
                 id: "1",
@@ -85,17 +68,38 @@ function SetModal({ open, onClose }) {
         ],
     });
     const [editing, setEditing] = useState(false);
-    const [description, setDescription] = useState(
-        setDetails.description || ""
+    const [name, setName] = useState(set.name || "");
+    const [description, setDescription] = useState(set.description || "");
+    const [isCompleted, setIsCompleted] = useState(set.isCompleted || false);
+    const [projectedAt, setProjectedAt] = useState(
+        set.projectedAt || undefined
     );
+
     const [responsibilities, setResponsibilities] = useState(
         setDetails.responsibilities || []
     );
 
     const [addUserMenu, setAddUserMenu] = useState(false);
 
+    const dispatch = useDispatch();
+
     const saveHandler = (e) => {
-        setSetDetails({ ...setDetails, description, responsibilities });
+        // setSetDetails({ ...setDetails, description, responsibilities });
+        if (
+            name !== set.name ||
+            description !== set.description ||
+            isCompleted !== set.isCompleted ||
+            projectedAt !== set.projectedAt
+        )
+            dispatch(
+                updateSetAction(
+                    name,
+                    description,
+                    isCompleted,
+                    projectedAt,
+                    set.id
+                )
+            );
         setEditing(false);
     };
 
@@ -111,44 +115,45 @@ function SetModal({ open, onClose }) {
             <Fade in={open}>
                 <div className={classes.modalPaper}>
                     <div className={classes.header}>
-                        <Typography variant="h5" color="textPrimary">
-                            {setDetails.name}
-                        </Typography>
                         {editing ? (
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={saveHandler}
-                            >
-                                Save
-                            </Button>
+                            <>
+                                <TextField
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                ></TextField>
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    onClick={saveHandler}
+                                >
+                                    Save
+                                </Button>
+                            </>
                         ) : (
-                            <Button onClick={() => setEditing(true)}>
-                                Edit
-                            </Button>
+                            <>
+                                <Typography variant="h5" color="textPrimary">
+                                    {set.name}
+                                </Typography>
+                                <Button onClick={() => setEditing(true)}>
+                                    Edit
+                                </Button>
+                            </>
                         )}
                     </div>
 
                     <div className={classes.responsibility}>
                         {/* left */}
                         <div className={classes.left}>
-                            {/* owner */}
-                            <Typography
-                                className={classes.description}
-                                variant="body2"
-                                color="textSecondary"
-                            >
-                                Owner
-                            </Typography>
-                            <UserCard user={setDetails.owner} />
                             {/* description */}
                             <div className={classes.description}>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                >
-                                    Description:
-                                </Typography>
+                                {(set.description || editing) && (
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                    >
+                                        Description:
+                                    </Typography>
+                                )}
                                 {editing ? (
                                     <TextField
                                         multiline
@@ -164,44 +169,60 @@ function SetModal({ open, onClose }) {
                                         variant="body1"
                                         color="textPrimary"
                                     >
-                                        {setDetails.description}
+                                        {set.description}
                                     </Typography>
                                 )}
                             </div>
                             {/* projected finish */}
-                            {setDetails.isCompleted ? (
+                            {set.isCompleted ? (
                                 <form className={classes.description}>
                                     <TextField
                                         id="date"
                                         label="Finished at"
                                         type="date"
                                         defaultValue={
-                                            setDetails.finishedAt
-                                                ? setDetails.finishedAt
-                                                      .toISOString()
-                                                      .substr(0, 10)
-                                                : new Date()
-                                                      .toISOString()
-                                                      .substr(0, 10)
+                                            set.finishedAt &&
+                                            set.finishedAt.substr(0, 10)
                                         }
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        disabled
                                     />
                                 </form>
                             ) : (
                                 <form className={classes.description}>
-                                    <TextField
-                                        id="date"
-                                        label="Projected finish"
-                                        type="date"
-                                        defaultValue={setDetails.projectedAt
-                                            .toISOString()
-                                            .substr(0, 10)}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
+                                    {editing ? (
+                                        <TextField
+                                            id="date"
+                                            label="Projected finish"
+                                            type="date"
+                                            value={
+                                                projectedAt &&
+                                                projectedAt.substr(0, 10)
+                                            }
+                                            onChange={(e) =>
+                                                setProjectedAt(e.target.value)
+                                            }
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                    ) : (
+                                        <TextField
+                                            id="date"
+                                            label="Projected finish"
+                                            type="date"
+                                            value={
+                                                set.projectedAt &&
+                                                set.projectedAt.substr(0, 10)
+                                            }
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            disabled
+                                        />
+                                    )}
                                 </form>
                             )}
 
@@ -213,89 +234,35 @@ function SetModal({ open, onClose }) {
                                 >
                                     Completed:
                                 </Typography>
-                                <Checkbox
-                                    checked={setDetails.isCompleted}
-                                    onChange={(e) =>
-                                        setSetDetails({
-                                            ...setDetails,
-                                            isCompleted: e.target.checked,
-                                        })
-                                    }
-                                />
+                                {editing ? (
+                                    <Checkbox
+                                        checked={isCompleted}
+                                        onChange={(e) =>
+                                            setIsCompleted(!isCompleted)
+                                        }
+                                    />
+                                ) : (
+                                    <Checkbox checked={set.isCompleted} />
+                                )}
                             </div>
-                        </div>
-                        {/* right */}
-                        <div className={classes.description}>
+                            {/* owner */}
                             <Typography
-                                className={classes.responsibilityTag}
+                                className={classes.description}
                                 variant="body2"
                                 color="textSecondary"
                             >
-                                Responsibility
+                                Owner
                             </Typography>
-                            {editing ? (
-                                <>
-                                    {responsibilities.map((user) => (
-                                        <ResponsibilityCard
-                                            key={user.id}
-                                            user={user}
-                                            editing={editing}
-                                            onRemove={(e) =>
-                                                setResponsibilities(
-                                                    responsibilities.filter(
-                                                        (usr) =>
-                                                            usr.id !== user.id
-                                                    )
-                                                )
-                                            }
-                                        />
-                                    ))}
-                                    <div className={classes.center}>
-                                        <Button
-                                            onClick={(e) =>
-                                                setAddUserMenu(e.currentTarget)
-                                            }
-                                        >
-                                            Add User
-                                        </Button>
-                                    </div>
-                                    <Menu
-                                        anchorEl={addUserMenu}
-                                        open={Boolean(addUserMenu)}
-                                        onClose={(e) => setAddUserMenu(null)}
-                                    >
-                                        <MenuItem
-                                            onClick={(e) =>
-                                                setAddUserMenu(null)
-                                            }
-                                        >
-                                            User 1
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={(e) =>
-                                                setAddUserMenu(null)
-                                            }
-                                        >
-                                            User 2
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={(e) =>
-                                                setAddUserMenu(null)
-                                            }
-                                        >
-                                            User 3
-                                        </MenuItem>
-                                    </Menu>
-                                </>
-                            ) : (
-                                setDetails.responsibilities.map((user) => (
-                                    <ResponsibilityCard
-                                        key={user.id}
-                                        user={user}
-                                    />
-                                ))
-                            )}
+                            <UserCard user={set.ownerRef} />
                         </div>
+                        <SetResponsibility
+                            editing={editing}
+                            responsibilities={responsibilities}
+                            setResponsibilities={setResponsibilities}
+                            setAddUserMenu={setAddUserMenu}
+                            addUserMenu={addUserMenu}
+                            setDetails={setDetails}
+                        />
                     </div>
                 </div>
             </Fade>

@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
+import { UserDoc } from "../user/userModel";
 import { Task } from "./taskModel";
 
 export const getTasks = async (req: Request, res: Response) => {
@@ -37,21 +38,23 @@ export const getTaskById = async (req: Request, res: Response) => {
 };
 
 export const updateTask = async (req: Request, res: Response) => {
-    const task = await Task.findById(req.params.taskId);
+    const task = await Task.findById(req.params.taskId).populate("ownerRef");
 
     if (!task)
         throw new NotFoundError(
             `Did not find a task with id: ${req.params.taskId}`
         );
 
-    if (!req.currentUser!.isAdmin && task.ownerRef != req.currentUser!.id)
+    const ownerId = (task.ownerRef as UserDoc).id;
+
+    if (!req.currentUser!.isAdmin && ownerId != req.currentUser!.id)
         throw new NotAuthorizedError("You do not own this task.");
 
     const { task: name, description, isCompleted, projectedAt } = req.body;
 
     task.task = name || task.task;
     task.description = description || task.description;
-    task.isCompleted = isCompleted || task.isCompleted;
+    if (isCompleted !== undefined) task.isCompleted = isCompleted;
     task.projectedAt = projectedAt || task.projectedAt;
     if (isCompleted === true) {
         task.finishedAt = new Date(Date.now());

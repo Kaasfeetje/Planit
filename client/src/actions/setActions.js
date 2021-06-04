@@ -6,6 +6,9 @@ import {
     SWAP_SET_FAIL,
     SWAP_SET_REQUEST,
     SWAP_SET_SUCCESS,
+    UPDATE_SET_FAIL,
+    UPDATE_SET_REQUEST,
+    UPDATE_SET_SUCCESS,
 } from "./types";
 
 export const createSetAction = (name, index, boardId) => async (dispatch) => {
@@ -68,3 +71,35 @@ export const swapSetsAction = (setAId, setBId) => async (dispatch) => {
         });
     }
 };
+
+export const updateSetAction =
+    (name, description, isCompleted, projectedAt, setId) =>
+    async (dispatch) => {
+        try {
+            dispatch({
+                type: UPDATE_SET_REQUEST,
+            });
+
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                },
+            };
+
+            const { data } = await axios.put(
+                `/api/v1/sets/${setId}`,
+                { name, description, isCompleted, projectedAt },
+                config
+            );
+
+            dispatch({ type: UPDATE_SET_SUCCESS, payload: data.data });
+        } catch (error) {
+            dispatch({
+                type: UPDATE_SET_FAIL,
+                payload:
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+            });
+        }
+    };

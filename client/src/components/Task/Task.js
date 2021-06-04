@@ -14,13 +14,12 @@ function Task({ task, onDragStart, onDragEnd, onDrop }) {
     const classes = useStyles();
     const [taskModalOpen, setTaskModalOpen] = useState(false);
 
-    
-
     return (
         <>
             <TaskModal
                 open={taskModalOpen}
                 onClose={(e) => setTaskModalOpen(false)}
+                task={task}
             />
             <Button
                 onDragStart={(e) => {
@@ -35,7 +34,7 @@ function Task({ task, onDragStart, onDragEnd, onDrop }) {
                 onClick={(e) => setTaskModalOpen(true)}
                 className={classes.task}
                 variant="outlined"
-                color="default"
+                color={task.isCompleted ? "secondary" : "default"}
                 disableElevation
             >
                 {task.task}

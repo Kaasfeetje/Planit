@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
+import { UserDoc } from "../user/userModel";
 import { Set } from "./setModel";
 
 export const getSets = async (req: Request, res: Response) => {
@@ -34,13 +35,14 @@ export const getSetById = async (req: Request, res: Response) => {
 };
 
 export const updateSet = async (req: Request, res: Response) => {
-    const set = await Set.findById(req.params.setId);
+    const set = await Set.findById(req.params.setId).populate("ownerRef");
     if (!set)
         throw new NotFoundError(
             `Did not find a set with id: ${req.params.setId}`
         );
 
-    if (!req.currentUser!.isAdmin && set.ownerRef != req.currentUser!.id)
+    const ownerId = (set.ownerRef as UserDoc).id;
+    if (!req.currentUser!.isAdmin && ownerId != req.currentUser!.id)
         throw new NotAuthorizedError("You do not own this set");
 
     const { name, description, isCompleted, finishedAt, projectedAt, index } =
@@ -48,8 +50,9 @@ export const updateSet = async (req: Request, res: Response) => {
 
     set.name = name || set.name;
     set.description = description || set.description;
-    set.isCompleted = isCompleted || set.isCompleted;
-    set.finishedAt = finishedAt || set.finishedAt;
+    if (isCompleted !== undefined) set.isCompleted = isCompleted;
+    if (isCompleted === true) set.finishedAt = new Date(Date.now());
+    else if (isCompleted === false) set.finishedAt = undefined;
     set.projectedAt = projectedAt || set.projectedAt;
     set.index = index || set.index;
     const updatedSet = await set.save();

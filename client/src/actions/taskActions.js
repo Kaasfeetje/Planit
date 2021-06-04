@@ -6,6 +6,9 @@ import {
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
     SWAP_TASK_SUCCESS,
+    UPDATE_TASK_FAIL,
+    UPDATE_TASK_REQUEST,
+    UPDATE_TASK_SUCCESS,
 } from "./types";
 
 export const createTaskAction =
@@ -69,3 +72,34 @@ export const swapTasksAction = (taskAId, taskBId) => async (dispatch) => {
         });
     }
 };
+
+export const updateTaskAction =
+    (task, description, isCompleted, taskId) => async (dispatch) => {
+        try {
+            dispatch({
+                type: UPDATE_TASK_REQUEST,
+            });
+
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                },
+            };
+
+            const { data } = await axios.put(
+                `/api/v1/tasks/${taskId}`,
+                { task, description, isCompleted },
+                config
+            );
+
+            dispatch({ type: UPDATE_TASK_SUCCESS, payload: data.data });
+        } catch (error) {
+            dispatch({
+                type: UPDATE_TASK_FAIL,
+                payload:
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+            });
+        }
+    };

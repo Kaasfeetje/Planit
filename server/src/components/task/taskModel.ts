@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { UserDoc } from "../user/userModel";
 
 interface TaskAttrs {
     task: string;
@@ -21,7 +22,7 @@ interface TaskDoc extends mongoose.Document {
     index: number;
     boardRef: string;
     setRef: string;
-    ownerRef: string;
+    ownerRef: string | UserDoc;
 }
 
 interface TaskModel extends mongoose.Model<TaskDoc> {

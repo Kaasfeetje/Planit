@@ -6,8 +6,8 @@ import {
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
 } from "./reducers/boardReducers";
-import { createTaskReducer, tasksReducer } from "./reducers/taskReducers";
-import { setsReducer } from "./reducers/setReducers";
+import { createTaskReducer, tasksReducer, updateTaskReducer } from "./reducers/taskReducers";
+import { createSetReducer, setsReducer } from "./reducers/setReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -15,8 +15,10 @@ const reducer = combineReducers({
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
     sets: setsReducer,
+    createSet: createSetReducer,
     tasks: tasksReducer,
     createTask: createTaskReducer,
+    updateTask: updateTaskReducer,
 });
 
 const storedUserInfo = localStorage.getItem("userInfo")

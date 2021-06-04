@@ -9,6 +9,9 @@ import {
     Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateTaskAction } from "../../actions/taskActions";
+import UserCard from "../common/UserCard";
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -33,23 +36,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function TaskModal({ open, onClose }) {
+function TaskModal({ open, onClose, task }) {
     const classes = useStyles();
-    const [taskDetails, setTaskDetails] = useState({
-        task: "Groceries",
-        description: "You must do groceries",
-        isCompleted: false,
-    });
 
     const [editing, setEditing] = useState(false);
-    const [description, setDescription] = useState(
-        taskDetails.description || ""
-    );
-    const [task, setTask] = useState(taskDetails.task || "");
+    const [description, setDescription] = useState(task.description || "");
+    const [newTask, setNewTask] = useState(task.task || "");
+    const [isCompleted, setIsCompleted] = useState(task.isCompleted || false);
+
+    const dispatch = useDispatch();
 
     const saveHandler = (e) => {
-        setTaskDetails({ ...taskDetails, description, task });
-
+        if (
+            newTask !== task.task ||
+            description !== task.description ||
+            isCompleted !== task.isCompleted
+        )
+            dispatch(
+                updateTaskAction(newTask, description, isCompleted, task.id)
+            );
         setEditing(false);
     };
 
@@ -68,8 +73,8 @@ function TaskModal({ open, onClose }) {
                         {editing ? (
                             <>
                                 <TextField
-                                    value={task}
-                                    onChange={(e) => setTask(e.target.value)}
+                                    value={newTask}
+                                    onChange={(e) => setNewTask(e.target.value)}
                                 ></TextField>
                                 <Button
                                     color="primary"
@@ -82,7 +87,7 @@ function TaskModal({ open, onClose }) {
                         ) : (
                             <>
                                 <Typography variant="h5" color="textPrimary">
-                                    {taskDetails.task}
+                                    {task.task}
                                 </Typography>
                                 <Button onClick={() => setEditing(true)}>
                                     Edit
@@ -91,9 +96,11 @@ function TaskModal({ open, onClose }) {
                         )}
                     </div>
                     <div className={classes.description}>
-                        <Typography variant="body2" color="textSecondary">
-                            Description:
-                        </Typography>
+                        {(task.description || editing) && (
+                            <Typography variant="body2" color="textSecondary">
+                                Description:
+                            </Typography>
+                        )}
                         {editing ? (
                             <TextField
                                 multiline
@@ -104,7 +111,7 @@ function TaskModal({ open, onClose }) {
                             />
                         ) : (
                             <Typography variant="body1" color="textPrimary">
-                                {taskDetails.description}
+                                {task.description}
                             </Typography>
                         )}
                     </div>
@@ -112,15 +119,20 @@ function TaskModal({ open, onClose }) {
                         <Typography variant="body2" color="textSecondary">
                             Completed:
                         </Typography>
-                        <Checkbox
-                            checked={taskDetails.isCompleted}
-                            onChange={(e) =>
-                                setTaskDetails({
-                                    ...taskDetails,
-                                    isCompleted: e.target.checked,
-                                })
-                            }
-                        />
+                        {!editing ? (
+                            <Checkbox checked={task.isCompleted} />
+                        ) : (
+                            <Checkbox
+                                checked={isCompleted}
+                                onChange={() => setIsCompleted(!isCompleted)}
+                            />
+                        )}
+                    </div>
+                    <div className={classes.isCompleted}>
+                        <Typography variant="body2" color="textSecondary">
+                            Owner:
+                        </Typography>
+                        <UserCard user={task.ownerRef} />
                     </div>
                 </div>
             </Fade>

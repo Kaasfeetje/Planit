@@ -6,11 +6,15 @@ import {
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
+    UPDATE_TASK_FAIL,
+    UPDATE_TASK_REQUEST,
+    UPDATE_TASK_SUCCESS,
 } from "../actions/types";
 
 export const tasksReducer = (state = { tasks: [] }, action) => {
     let newTasks;
     switch (action.type) {
+        //FETCH TASKS
         case FETCH_FULL_BOARD_SUCCESS:
             newTasks = [];
             if (state.tasks.length !== 0) {
@@ -24,6 +28,8 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
             return {
                 tasks: newTasks.sort((a, b) => a.index - b.index),
             };
+
+        //CREATE TASK
         case CREATE_TASK_SUCCESS:
             newTasks = [action.payload, ...state.tasks];
             newTasks = newTasks.sort((a, b) => a.index - b.index);
@@ -31,6 +37,8 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
             return {
                 tasks: newTasks,
             };
+
+        //SWAP TASKS
         case SWAP_TASK_REQUEST:
             newTasks = swapTasks(
                 state.tasks,
@@ -41,6 +49,15 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
         case SWAP_TASK_FAIL:
             return { tasks: state.beforeSwap, beforeSwap: undefined };
 
+        //UPDATE TASK
+        case UPDATE_TASK_SUCCESS:
+            newTasks = state.tasks.filter(
+                (task) => task.id !== action.payload.id
+            );
+            newTasks.push(action.payload);
+            return { tasks: newTasks.sort((a, b) => a.index - b.index) };
+
+        //RESET
         case FETCH_FULL_BOARD_RESET:
             return { tasks: [] };
         default:
@@ -57,6 +74,19 @@ export const createTaskReducer = (state = {}, action) => {
         case CREATE_TASK_SUCCESS:
             return { loading: false, task: action.payload };
         case CREATE_TASK_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const updateTaskReducer = (state = {}, action) => {
+    switch (action.type) {
+        case UPDATE_TASK_REQUEST:
+            return { loading: true };
+        case UPDATE_TASK_SUCCESS:
+            return { loading: false, task: action.payload };
+        case UPDATE_TASK_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;
