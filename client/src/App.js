@@ -1,5 +1,6 @@
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
+import TaskContextmenu from "./components/ContextMenu/TaskContextmenu";
 import BoardPage from "./components/pages/BoardPage";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
@@ -15,6 +16,7 @@ function App() {
                 <Route exact path="/signup" component={SignupPage} />
                 <Route exact path="/" component={HomePage} />
             </Switch>
+            <TaskContextmenu />
         </Router>
     );
 }

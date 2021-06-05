@@ -7,6 +7,7 @@ import {
     DELETE_TASK_SUCCESS,
     FETCH_FULL_BOARD_RESET,
     FETCH_FULL_BOARD_SUCCESS,
+    IS_COMPLETED_TASK_SUCCESS,
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
     SWAP_TASK_SUCCESS,
@@ -72,6 +73,14 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
                 (task) => task.id !== action.payload.id
             );
             return { tasks: newTasks };
+
+        //IS_COMPLETED_TASK
+        case IS_COMPLETED_TASK_SUCCESS:
+            newTasks = state.tasks.filter(
+                (task) => task.id !== action.payload.id
+            );
+            newTasks.push(action.payload);
+            return { tasks: newTasks.sort((a, b) => a.index - b.index) };
 
         //RESET
         case FETCH_FULL_BOARD_RESET:

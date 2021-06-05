@@ -6,6 +6,9 @@ import {
     DELETE_TASK_FAIL,
     DELETE_TASK_REQUEST,
     DELETE_TASK_SUCCESS,
+    IS_COMPLETED_TASK_FAIL,
+    IS_COMPLETED_TASK_REQUEST,
+    IS_COMPLETED_TASK_SUCCESS,
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
     SWAP_TASK_SUCCESS,
@@ -132,3 +135,34 @@ export const deleteTaskAction = (taskId) => async (dispatch) => {
         });
     }
 };
+
+export const isCompletedTaskAction =
+    (taskId, isCompleted) => async (dispatch) => {
+        try {
+            dispatch({
+                type: IS_COMPLETED_TASK_REQUEST,
+            });
+
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                },
+            };
+
+            const { data } = await axios.put(
+                `/api/v1/tasks/${taskId}`,
+                { isCompleted },
+                config
+            );
+
+            dispatch({ type: IS_COMPLETED_TASK_SUCCESS, payload: data.data });
+        } catch (error) {
+            dispatch({
+                type: IS_COMPLETED_TASK_FAIL,
+                payload:
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+            });
+        }
+    };

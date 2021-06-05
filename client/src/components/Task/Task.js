@@ -32,10 +32,13 @@ function Task({ task, onDragStart, onDragEnd, onDrop }) {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={onDrop}
                 onClick={(e) => setTaskModalOpen(true)}
-                className={classes.task}
+                className={`${classes.task} task-context-menu ${
+                    task.isCompleted ? "task-completed" : ""
+                }`}
                 variant="outlined"
                 color={task.isCompleted ? "secondary" : "default"}
                 disableElevation
+                data-id={task.id}
             >
                 {task.task}
             </Button>
