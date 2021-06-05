@@ -35,9 +35,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Set({ set, tasks, onDragStart, onDragEnd, onDrop }) {
+function Set({
+    set,
+    tasks,
+    onDragStart,
+    onDragEnd,
+    onDrop,
+    setTaskDragging,
+    taskDragging,
+}) {
     const classes = useStyles();
-    const [dragging, setDragging] = useState(undefined);
+    // const [dragging, setDragging] = useState(undefined);
     const [addingTask, setAddingTask] = useState(false);
     const [newTask, setNewTask] = useState("");
     const [setModalOpen, setSetModalOpen] = useState(false);
@@ -45,9 +53,10 @@ function Set({ set, tasks, onDragStart, onDragEnd, onDrop }) {
     const dispatch = useDispatch();
 
     const dropHandler = (task) => {
-        if (!dragging) return;
-        if (dragging.id === task.id) return;
-        dispatch(swapTasksAction(dragging.id, task.id));
+        // console.log("task", task, " dragging", taskDragging);
+        if (!taskDragging) return;
+        if (taskDragging.id === task.id) return;
+        dispatch(swapTasksAction(taskDragging.id, task.id));
     };
 
     const onAddTask = (e) => {
@@ -86,8 +95,8 @@ function Set({ set, tasks, onDragStart, onDragEnd, onDrop }) {
                         <Task
                             key={task.id}
                             task={task}
-                            onDragStart={() => setDragging(task)}
-                            onDragEnd={() => setDragging(undefined)}
+                            onDragStart={() => setTaskDragging(task)}
+                            onDragEnd={() => setTaskDragging(undefined)}
                             onDrop={() => dropHandler(task)}
                         />
                     ))}

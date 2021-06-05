@@ -7,12 +7,14 @@ import {
     getTaskById,
     getTasks,
     swapTasks,
+    switchTaskSet,
     updateTask,
 } from "./taskController";
 
 const router = express.Router();
 
 router.post("/swap", currentUser, requireAuth, swapTasks);
+router.post("/switch-set", currentUser, requireAuth, switchTaskSet);
 
 router.route("/").all(currentUser, requireAuth).get(getTasks).post(createTask);
 router

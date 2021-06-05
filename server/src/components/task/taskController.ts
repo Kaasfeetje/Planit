@@ -3,6 +3,7 @@ import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
 import { board_access_levels } from "../board/boardAccessModel";
 import { hasBoardPermission } from "../board/boardController";
+import { Set } from "../set/setModel";
 import { UserDoc } from "../user/userModel";
 import { Task } from "./taskModel";
 
@@ -144,8 +145,43 @@ export const swapTasks = async (req: Request, res: Response) => {
     const aIndex = a.index;
     a.index = b.index;
     b.index = aIndex;
+
+    const aSet = a.setRef;
+    a.setRef = b.setRef;
+    b.setRef = aSet;
+
     await a.save();
     await b.save();
 
     res.status(200).send({ data: { a: a.id, b: b.id } });
+};
+
+export const switchTaskSet = async (req: Request, res: Response) => {
+    const { setId, taskId } = req.body;
+    const set = await Set.findById(setId);
+    const task = await Task.findById(taskId);
+
+    if (!set) throw new NotFoundError(`Did not find a set with id: ${setId}`);
+    if (!task)
+        throw new NotFoundError(`Did not find a task with id: ${taskId}`);
+
+    //permissions
+    const canMove = await hasBoardPermission(
+        [
+            board_access_levels.move,
+            board_access_levels.edit,
+            board_access_levels.owner,
+        ],
+        req.currentUser!.id,
+        task.boardRef
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to move this task."
+        );
+
+    task.setRef = set.id;
+    await task.save();
+
+    res.status(200).send({ data: { id: task.id } });
 };

@@ -6,6 +6,7 @@ import Set from "../Set/Set";
 import BoardModal from "./BoardModal";
 import { history } from "../../history";
 import { DELETE_BOARD_RESET } from "../../actions/types";
+import { switchTasksAction } from "../../actions/taskActions";
 
 const useStyles = makeStyles((theme) => ({
     set: {
@@ -49,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 function Board({ board, match }) {
     const classes = useStyles();
 
+    const [taskDragging, setTaskDragging] = useState(undefined);
+
     const [dragging, setDragging] = useState(undefined);
     const [addingSet, setAddingSet] = useState(false);
     const [newSet, setNewSet] = useState("");
@@ -91,6 +94,12 @@ function Board({ board, match }) {
     }, [deleteSuccess, dispatch]);
 
     const dropHandler = (set) => {
+        if (taskDragging) {
+            if (taskDragging.setRef === set.id) return;
+            //switch set action
+            dispatch(switchTasksAction(taskDragging.id, set.id));
+        }
+
         if (!dragging) return;
         if (dragging.id === set.id) return;
         dispatch(swapSetsAction(dragging.id, set.id));
@@ -135,6 +144,9 @@ function Board({ board, match }) {
                         onDragStart={() => setDragging(set)}
                         onDragEnd={() => setDragging(undefined)}
                         onDrop={() => dropHandler(set)}
+                        //task
+                        setTaskDragging={setTaskDragging}
+                        taskDragging={taskDragging}
                     />
                 ))}
                 <div className={classes.set}>

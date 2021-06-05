@@ -11,6 +11,9 @@ import {
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
     SWAP_TASK_SUCCESS,
+    SWITCH_TASK_FAIL,
+    SWITCH_TASK_REQUEST,
+    SWITCH_TASK_SUCCESS,
     UPDATE_TASK_FAIL,
     UPDATE_TASK_REQUEST,
     UPDATE_TASK_SUCCESS,
@@ -82,6 +85,22 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
             newTasks.push(action.payload);
             return { tasks: newTasks.sort((a, b) => a.index - b.index) };
 
+        //SWITCH TASKS
+        case SWITCH_TASK_REQUEST:
+            newTasks = switchTasks(
+                state.tasks,
+                action.payload.taskId,
+                action.payload.setId
+            );
+            return {
+                tasks: newTasks,
+                beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
+            };
+        case SWITCH_TASK_SUCCESS:
+            return { ...state, beforeSwap: undefined };
+        case SWITCH_TASK_FAIL:
+            return { ...state, tasks: state.beforeSwap };
+
         //RESET
         case FETCH_FULL_BOARD_RESET:
             return { tasks: [] };
@@ -132,16 +151,33 @@ export const deleteTaskReducer = (state = {}, action) => {
 };
 
 const swapTasks = (tasks, aId, bId) => {
-    let a = tasks.filter((task) => task.id === aId)[0];
-    let b = tasks.filter((task) => task.id === bId)[0];
+    const a = tasks.filter((task) => task.id === aId)[0];
+    const b = tasks.filter((task) => task.id === bId)[0];
 
-    let aIndex = a.index;
+    const aIndex = a.index;
     a.index = b.index;
     b.index = aIndex;
 
-    let newTasks = tasks.filter((task) => task.id !== a.id && task.id !== b.id);
+    const aSet = a.setRef;
+    a.setRef = b.setRef;
+    b.setRef = aSet;
+
+    const newTasks = tasks.filter(
+        (task) => task.id !== a.id && task.id !== b.id
+    );
     newTasks.push(a);
     newTasks.push(b);
+
+    return newTasks.sort((_a, _b) => _a.index - _b.index);
+};
+
+const switchTasks = (tasks, taskId, setId) => {
+    //switches a tasks set
+    const a = tasks.filter((task) => task.id === taskId)[0];
+    a.setRef = setId;
+
+    const newTasks = tasks.filter((task) => task.id !== taskId);
+    newTasks.push(a);
 
     return newTasks.sort((_a, _b) => _a.index - _b.index);
 };
