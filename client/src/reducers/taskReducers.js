@@ -6,6 +6,7 @@ import {
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
+    SWAP_TASK_SUCCESS,
     UPDATE_TASK_FAIL,
     UPDATE_TASK_REQUEST,
     UPDATE_TASK_SUCCESS,
@@ -45,9 +46,14 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
                 action.payload.a,
                 action.payload.b
             );
-            return { tasks: newTasks, beforeSwap: state.tasks };
+            return {
+                tasks: newTasks,
+                beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
+            };
+        case SWAP_TASK_SUCCESS:
+            return { ...state, beforeSwap: undefined };
         case SWAP_TASK_FAIL:
-            return { tasks: state.beforeSwap, beforeSwap: undefined };
+            return { ...state, tasks: state.beforeSwap };
 
         //UPDATE TASK
         case UPDATE_TASK_SUCCESS:

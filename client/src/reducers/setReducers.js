@@ -6,6 +6,7 @@ import {
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_SET_FAIL,
     SWAP_SET_REQUEST,
+    SWAP_SET_SUCCESS,
     UPDATE_SET_FAIL,
     UPDATE_SET_REQUEST,
     UPDATE_SET_SUCCESS,
@@ -38,9 +39,14 @@ export const setsReducer = (state = { sets: [] }, action) => {
         case SWAP_SET_REQUEST:
             newSets = swapSets(state.sets, action.payload.a, action.payload.b);
 
-            return { sets: newSets, beforeSwap: state.sets };
+            return {
+                sets: newSets,
+                beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
+            };
+        case SWAP_SET_SUCCESS:
+            return { ...state, beforeSwap: undefined };
         case SWAP_SET_FAIL:
-            return { sets: state.beforeSwap, beforeSwap: undefined };
+            return { ...state, sets: state.beforeSwap };
 
         //UPDATE SET
         case UPDATE_SET_SUCCESS:

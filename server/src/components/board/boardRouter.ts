@@ -8,6 +8,7 @@ import {
     GetBoards,
     getFullBoardById,
     getMyBoards,
+    joinBoard,
     UpdateBoard,
 } from "./boardController";
 
@@ -28,5 +29,6 @@ router
     .delete(deleteBoard);
 
 router.get("/:boardId/full", currentUser, requireAuth, getFullBoardById);
+router.post("/:boardId/join", currentUser, requireAuth, joinBoard);
 
 export { router as boardRouter };

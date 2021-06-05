@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
+import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
 import { Set } from "../set/setModel";
 import { Task } from "../task/taskModel";
+import { BoardAccess, board_access_levels } from "./boardAccessModel";
 import { Board } from "./boardModel";
 
 export const GetBoards = async (req: Request, res: Response) => {
@@ -23,6 +25,12 @@ export const CreateBoard = async (req: Request, res: Response) => {
     });
 
     await board.save();
+
+    await BoardAccess.build({
+        boardRef: board.id,
+        userRef: req.currentUser!.id,
+        access: board_access_levels.owner,
+    }).save();
 
     res.status(201).send({ data: board });
 };
@@ -47,7 +55,9 @@ export const UpdateBoard = async (req: Request, res: Response) => {
         );
 
     if (!req.currentUser!.isAdmin && board.ownerRef != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this board.");
+        throw new NoPermissionError(
+            "You do not have permission to edit this board."
+        );
 
     const { name, description, goal } = req.body;
 
@@ -68,7 +78,9 @@ export const deleteBoard = async (req: Request, res: Response) => {
         );
 
     if (!req.currentUser!.isAdmin && board.ownerRef != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this board.");
+        throw new NoPermissionError(
+            "You do not have the permission to delete this board."
+        );
 
     await board.remove();
     res.status(200).send({ data: {} });
@@ -93,4 +105,38 @@ export const getFullBoardById = async (req: Request, res: Response) => {
     const tasks = await Task.find({ boardRef: board.id }).populate("ownerRef");
 
     res.status(200).send({ data: { board, sets, tasks } });
+};
+
+//BOARD ACCESS
+export const joinBoard = async (req: Request, res: Response) => {
+    const board = await Board.findById(req.params.boardId);
+    if (!board)
+        throw new NotFoundError(
+            `Did not find a board with id: ${req.params.boardId}`
+        );
+
+    const boardAccess = BoardAccess.build({
+        boardRef: board.id,
+        userRef: req.currentUser!.id,
+        access: board_access_levels.view,
+    });
+
+    await boardAccess.save();
+
+    res.status(201).send({ data: boardAccess });
+};
+
+export const hasBoardPermission = async (
+    access_levels: board_access_levels[],
+    userId: string,
+    boardId: string
+) => {
+    const boardAccess = await BoardAccess.findOne({
+        boardRef: boardId,
+        userRef: userId,
+    });
+
+    if (!boardAccess) return false;
+
+    if (access_levels.includes(boardAccess.access)) return true;
 };

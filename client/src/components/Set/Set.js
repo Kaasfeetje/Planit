@@ -46,6 +46,7 @@ function Set({ set, tasks, onDragStart, onDragEnd, onDrop }) {
 
     const dropHandler = (task) => {
         if (!dragging) return;
+        if (dragging.id === task.id) return;
         dispatch(swapTasksAction(dragging.id, task.id));
     };
 

@@ -8,7 +8,7 @@ interface BoardAttrs {
     ownerRef: string;
 }
 
-interface BoardDoc extends mongoose.Document {
+export interface BoardDoc extends mongoose.Document {
     id: string;
     name: string;
     image: string;

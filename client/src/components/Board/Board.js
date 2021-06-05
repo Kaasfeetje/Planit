@@ -80,6 +80,7 @@ function Board({ board, match }) {
 
     const dropHandler = (set) => {
         if (!dragging) return;
+        if (dragging.id === set.id) return;
         dispatch(swapSetsAction(dragging.id, set.id));
     };
 

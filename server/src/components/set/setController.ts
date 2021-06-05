@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
+import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
+import { board_access_levels } from "../board/boardAccessModel";
+import { hasBoardPermission } from "../board/boardController";
 import { UserDoc } from "../user/userModel";
 import { Set } from "./setModel";
 
@@ -12,6 +14,16 @@ export const getSets = async (req: Request, res: Response) => {
 
 export const createSet = async (req: Request, res: Response) => {
     const { boardId, name, index } = req.body;
+    //permissions
+    const canCreate = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        boardId
+    );
+    if (!canCreate && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to create a set."
+        );
 
     const set = Set.build({
         ownerRef: req.currentUser!.id,
@@ -41,10 +53,23 @@ export const updateSet = async (req: Request, res: Response) => {
             `Did not find a set with id: ${req.params.setId}`
         );
 
+    //permissions
+    const canUpdate = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        set.boardRef
+    );
     const ownerId = (set.ownerRef as UserDoc).id;
-    if (!req.currentUser!.isAdmin && ownerId != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this set");
+    if (
+        !canUpdate &&
+        ownerId != req.currentUser!.id &&
+        !req.currentUser!.isAdmin
+    )
+        throw new NoPermissionError(
+            "You do not have permission to update this set."
+        );
 
+    //update
     const { name, description, isCompleted, finishedAt, projectedAt, index } =
         req.body;
 
@@ -67,8 +92,20 @@ export const deleteSet = async (req: Request, res: Response) => {
             `Did not find a set with id: ${req.params.setId}`
         );
 
-    if (!req.currentUser!.isAdmin && set.ownerRef != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this set");
+    //permissions
+    const canDelete = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        set.boardRef
+    );
+    if (
+        !canDelete &&
+        set.ownerRef != req.currentUser!.id &&
+        !req.currentUser!.isAdmin
+    )
+        throw new NoPermissionError(
+            "You do not have permission to delete this set."
+        );
 
     await set.remove();
     res.status(200).send({ data: {} });
@@ -82,6 +119,22 @@ export const swapSets = async (req: Request, res: Response) => {
     if (!a || !b)
         throw new NotFoundError("Did not find one or both of the tasks");
 
+    //permissions
+    const canMove = await hasBoardPermission(
+        [
+            board_access_levels.move,
+            board_access_levels.edit,
+            board_access_levels.owner,
+        ],
+        req.currentUser!.id,
+        a.boardRef
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to move this set."
+        );
+
+    //swap
     const aIndex = a.index;
     a.index = b.index;
     b.index = aIndex;

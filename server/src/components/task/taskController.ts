@@ -1,6 +1,8 @@
 import { Response, Request } from "express";
-import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
+import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
+import { board_access_levels } from "../board/boardAccessModel";
+import { hasBoardPermission } from "../board/boardController";
 import { UserDoc } from "../user/userModel";
 import { Task } from "./taskModel";
 
@@ -12,6 +14,17 @@ export const getTasks = async (req: Request, res: Response) => {
 
 export const createTask = async (req: Request, res: Response) => {
     const { task, index, boardId, setId } = req.body;
+
+    //permissions
+    const canCreate = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        boardId
+    );
+    if (!canCreate && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to create a task."
+        );
 
     const createdTask = Task.build({
         task,
@@ -45,10 +58,21 @@ export const updateTask = async (req: Request, res: Response) => {
             `Did not find a task with id: ${req.params.taskId}`
         );
 
+    //permissions
+    const canUpdate = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        task.boardRef
+    );
     const ownerId = (task.ownerRef as UserDoc).id;
-
-    if (!req.currentUser!.isAdmin && ownerId != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this task.");
+    if (
+        !canUpdate &&
+        ownerId != req.currentUser!.id &&
+        !req.currentUser!.isAdmin
+    )
+        throw new NoPermissionError(
+            "You do not have permission to update this task."
+        );
 
     const { task: name, description, isCompleted, projectedAt } = req.body;
 
@@ -74,8 +98,21 @@ export const deleteTask = async (req: Request, res: Response) => {
             `Did not find a task with id: ${req.params.taskId}`
         );
 
-    if (!req.currentUser!.isAdmin && task.ownerRef != req.currentUser!.id)
-        throw new NotAuthorizedError("You do not own this task.");
+    //permissions
+    const canDelete = await hasBoardPermission(
+        [board_access_levels.edit, board_access_levels.owner],
+        req.currentUser!.id,
+        task.boardRef
+    );
+    const ownerId = (task.ownerRef as UserDoc).id;
+    if (
+        !canDelete &&
+        ownerId != req.currentUser!.id &&
+        !req.currentUser!.isAdmin
+    )
+        throw new NoPermissionError(
+            "You do not have permission to delete this task."
+        );
 
     await task.remove();
     res.status(200).send({ data: {} });
@@ -88,6 +125,21 @@ export const swapTasks = async (req: Request, res: Response) => {
 
     if (!a || !b)
         throw new NotFoundError("Did not find one or both of the tasks");
+
+    //permissions
+    const canMove = await hasBoardPermission(
+        [
+            board_access_levels.move,
+            board_access_levels.edit,
+            board_access_levels.owner,
+        ],
+        req.currentUser!.id,
+        a.boardRef
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to move this task."
+        );
 
     const aIndex = a.index;
     a.index = b.index;
