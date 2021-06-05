@@ -115,7 +115,7 @@ export const deleteTask = async (req: Request, res: Response) => {
         );
 
     await task.remove();
-    res.status(200).send({ data: {} });
+    res.status(200).send({ data: { id: req.params.taskId } });
 };
 
 export const swapTasks = async (req: Request, res: Response) => {

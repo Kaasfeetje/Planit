@@ -3,17 +3,20 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { userLoginReducer, userSignupReducer } from "./reducers/userReducers";
 import {
+    deleteBoardReducer,
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
     updateBoardReducer,
 } from "./reducers/boardReducers";
 import {
     createTaskReducer,
+    deleteTaskReducer,
     tasksReducer,
     updateTaskReducer,
 } from "./reducers/taskReducers";
 import {
     createSetReducer,
+    deleteSetReducer,
     setsReducer,
     updateSetReducer,
 } from "./reducers/setReducers";
@@ -24,12 +27,15 @@ const reducer = combineReducers({
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
     updateBoard: updateBoardReducer,
+    deleteBoard: deleteBoardReducer,
     sets: setsReducer,
     createSet: createSetReducer,
     updateSet: updateSetReducer,
+    deleteSet: deleteSetReducer,
     tasks: tasksReducer,
     createTask: createTaskReducer,
     updateTask: updateTaskReducer,
+    deleteTask: deleteTaskReducer,
 });
 
 const storedUserInfo = localStorage.getItem("userInfo")

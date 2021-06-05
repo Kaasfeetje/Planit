@@ -3,6 +3,7 @@ import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
 import { board_access_levels } from "../board/boardAccessModel";
 import { hasBoardPermission } from "../board/boardController";
+import { Task } from "../task/taskModel";
 import { UserDoc } from "../user/userModel";
 import { Set } from "./setModel";
 
@@ -107,8 +108,10 @@ export const deleteSet = async (req: Request, res: Response) => {
             "You do not have permission to delete this set."
         );
 
+    await Task.deleteMany({ setRef: set.id });
     await set.remove();
-    res.status(200).send({ data: {} });
+
+    res.status(200).send({ data: { id: req.params.setId } });
 };
 
 export const swapSets = async (req: Request, res: Response) => {

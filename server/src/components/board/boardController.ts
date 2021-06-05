@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { BadRequestError } from "../../common/errors/BadRequestError";
 import { NoPermissionError } from "../../common/errors/NoPermissionError";
 import { NotAuthorizedError } from "../../common/errors/NotAuthorizedError";
 import { NotFoundError } from "../../common/errors/NotFoundError";
@@ -82,6 +83,9 @@ export const deleteBoard = async (req: Request, res: Response) => {
             "You do not have the permission to delete this board."
         );
 
+    await Task.deleteMany({ boardRef: board.id });
+    await Set.deleteMany({ boardRef: board.id });
+
     await board.remove();
     res.status(200).send({ data: {} });
 };
@@ -114,6 +118,14 @@ export const joinBoard = async (req: Request, res: Response) => {
         throw new NotFoundError(
             `Did not find a board with id: ${req.params.boardId}`
         );
+
+    const existingBoardAccess = await BoardAccess.findOne({
+        boardRef: board.id,
+        userRef: req.currentUser!.id,
+    });
+
+    if (existingBoardAccess)
+        throw new BadRequestError("You have already joined this board.");
 
     const boardAccess = BoardAccess.build({
         boardRef: board.id,

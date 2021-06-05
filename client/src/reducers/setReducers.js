@@ -2,6 +2,9 @@ import {
     CREATE_SET_FAIL,
     CREATE_SET_REQUEST,
     CREATE_SET_SUCCESS,
+    DELETE_SET_FAIL,
+    DELETE_SET_REQUEST,
+    DELETE_SET_SUCCESS,
     FETCH_FULL_BOARD_RESET,
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_SET_FAIL,
@@ -54,6 +57,11 @@ export const setsReducer = (state = { sets: [] }, action) => {
             newSets.push(action.payload);
             return { sets: newSets.sort((a, b) => a.index - b.index) };
 
+        //DELETE SET
+        case DELETE_SET_SUCCESS:
+            newSets = state.sets.filter((set) => set.id !== action.payload.id);
+            return { sets: newSets };
+
         //RESET
         case FETCH_FULL_BOARD_RESET:
             return { sets: [] };
@@ -86,6 +94,21 @@ export const updateSetReducer = (state = {}, action) => {
         case UPDATE_SET_SUCCESS:
             return { loading: false, set: action.payload };
         case UPDATE_SET_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const deleteSetReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DELETE_SET_REQUEST:
+            return {
+                loading: true,
+            };
+        case DELETE_SET_SUCCESS:
+            return { loading: false, success: true };
+        case DELETE_SET_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

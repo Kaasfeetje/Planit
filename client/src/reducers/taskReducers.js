@@ -2,6 +2,9 @@ import {
     CREATE_TASK_FAIL,
     CREATE_TASK_REQUEST,
     CREATE_TASK_SUCCESS,
+    DELETE_TASK_FAIL,
+    DELETE_TASK_REQUEST,
+    DELETE_TASK_SUCCESS,
     FETCH_FULL_BOARD_RESET,
     FETCH_FULL_BOARD_SUCCESS,
     SWAP_TASK_FAIL,
@@ -63,6 +66,13 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
             newTasks.push(action.payload);
             return { tasks: newTasks.sort((a, b) => a.index - b.index) };
 
+        //DELETE TASK
+        case DELETE_TASK_SUCCESS:
+            newTasks = state.tasks.filter(
+                (task) => task.id !== action.payload.id
+            );
+            return { tasks: newTasks };
+
         //RESET
         case FETCH_FULL_BOARD_RESET:
             return { tasks: [] };
@@ -93,6 +103,19 @@ export const updateTaskReducer = (state = {}, action) => {
         case UPDATE_TASK_SUCCESS:
             return { loading: false, task: action.payload };
         case UPDATE_TASK_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const deleteTaskReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DELETE_TASK_REQUEST:
+            return { loading: true };
+        case DELETE_TASK_SUCCESS:
+            return { loading: false, success: true };
+        case DELETE_TASK_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

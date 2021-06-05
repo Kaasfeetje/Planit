@@ -3,6 +3,9 @@ import {
     CREATE_TASK_FAIL,
     CREATE_TASK_REQUEST,
     CREATE_TASK_SUCCESS,
+    DELETE_TASK_FAIL,
+    DELETE_TASK_REQUEST,
+    DELETE_TASK_SUCCESS,
     SWAP_TASK_FAIL,
     SWAP_TASK_REQUEST,
     SWAP_TASK_SUCCESS,
@@ -103,3 +106,29 @@ export const updateTaskAction =
             });
         }
     };
+
+export const deleteTaskAction = (taskId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: DELETE_TASK_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.delete(`/api/v1/tasks/${taskId}`, config);
+
+        dispatch({ type: DELETE_TASK_SUCCESS, payload: data.data });
+    } catch (error) {
+        dispatch({
+            type: DELETE_TASK_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};

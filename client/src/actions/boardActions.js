@@ -9,6 +9,9 @@ import {
     UPDATE_BOARD_REQUEST,
     UPDATE_BOARD_SUCCESS,
     UPDATE_BOARD_FAIL,
+    DELETE_BOARD_REQUEST,
+    DELETE_BOARD_SUCCESS,
+    DELETE_BOARD_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -99,3 +102,32 @@ export const updateBoardAction =
             });
         }
     };
+
+export const deleteBoardAction = (boardId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: DELETE_BOARD_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.delete(
+            `/api/v1/boards/${boardId}`,
+            config
+        );
+
+        dispatch({ type: DELETE_BOARD_SUCCESS, payload: data.data });
+    } catch (error) {
+        dispatch({
+            type: DELETE_BOARD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};

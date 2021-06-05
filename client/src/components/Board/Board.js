@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSetAction, swapSetsAction } from "../../actions/setActions";
 import Set from "../Set/Set";
 import BoardModal from "./BoardModal";
+import { history } from "../../history";
+import { DELETE_BOARD_RESET } from "../../actions/types";
 
 const useStyles = makeStyles((theme) => ({
     set: {
@@ -61,6 +63,9 @@ function Board({ board, match }) {
     const _tasks = useSelector((state) => state.tasks);
     const { tasks } = _tasks;
 
+    const deleteBoard = useSelector((state) => state.deleteBoard);
+    const { success: deleteSuccess } = deleteBoard;
+
     const ref = useRef();
 
     useEffect(() => {
@@ -77,6 +82,13 @@ function Board({ board, match }) {
         document.body.addEventListener("wheel", onScroll);
         return () => document.body.removeEventListener("wheel", onScroll);
     }, [ref]);
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            dispatch({ type: DELETE_BOARD_RESET });
+            history.push("/");
+        }
+    }, [deleteSuccess, dispatch]);
 
     const dropHandler = (set) => {
         if (!dragging) return;

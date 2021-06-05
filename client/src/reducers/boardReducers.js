@@ -1,4 +1,8 @@
 import {
+    DELETE_BOARD_FAIL,
+    DELETE_BOARD_REQUEST,
+    DELETE_BOARD_RESET,
+    DELETE_BOARD_SUCCESS,
     FETCH_FULL_BOARD_FAIL,
     FETCH_FULL_BOARD_REQUEST,
     FETCH_FULL_BOARD_SUCCESS,
@@ -50,6 +54,21 @@ export const updateBoardReducer = (state = {}, action) => {
             return { loading: false, board: action.payload };
         case UPDATE_BOARD_FAIL:
             return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const deleteBoardReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DELETE_BOARD_REQUEST:
+            return { loading: true };
+        case DELETE_BOARD_SUCCESS:
+            return { loading: false, success: true };
+        case DELETE_BOARD_FAIL:
+            return { loading: false, error: action.payload };
+        case DELETE_BOARD_RESET:
+            return {};
         default:
             return state;
     }

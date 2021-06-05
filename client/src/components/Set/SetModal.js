@@ -3,16 +3,18 @@ import {
     Button,
     Checkbox,
     Fade,
+    IconButton,
     makeStyles,
     Modal,
     TextField,
     Typography,
 } from "@material-ui/core";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import UserCard from "../common/UserCard";
 import SetResponsibility from "./SetResponsibility";
-import { updateSetAction } from "../../actions/setActions";
+import { deleteSetAction, updateSetAction } from "../../actions/setActions";
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -45,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
     isCompleted: {
         display: "flex",
         alignItems: "center",
+    },
+    deleteIcon: {
+        border: `1px solid ${theme.palette.error.main}`,
+        borderRadius: "0.25rem",
+        padding: theme.spacing(1),
+        marginLeft: theme.spacing(1),
     },
 }));
 
@@ -103,6 +111,11 @@ function SetModal({ open, onClose, set }) {
         setEditing(false);
     };
 
+    const deleteHandler = (e) => {
+        e.preventDefault();
+        dispatch(deleteSetAction(set.id));
+    };
+
     return (
         <Modal
             className={classes.modal}
@@ -121,22 +134,38 @@ function SetModal({ open, onClose, set }) {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 ></TextField>
-                                <Button
-                                    color="primary"
-                                    variant="contained"
-                                    onClick={saveHandler}
-                                >
-                                    Save
-                                </Button>
+                                <div>
+                                    <Button
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={saveHandler}
+                                    >
+                                        Save
+                                    </Button>
+                                    <IconButton
+                                        onClick={deleteHandler}
+                                        className={classes.deleteIcon}
+                                    >
+                                        <DeleteForeverIcon color="error" />
+                                    </IconButton>
+                                </div>
                             </>
                         ) : (
                             <>
                                 <Typography variant="h5" color="textPrimary">
                                     {set.name}
                                 </Typography>
-                                <Button onClick={() => setEditing(true)}>
-                                    Edit
-                                </Button>
+                                <div>
+                                    <Button onClick={() => setEditing(true)}>
+                                        Edit
+                                    </Button>
+                                    <IconButton
+                                        onClick={deleteHandler}
+                                        className={classes.deleteIcon}
+                                    >
+                                        <DeleteForeverIcon color="error" />
+                                    </IconButton>
+                                </div>
                             </>
                         )}
                     </div>
