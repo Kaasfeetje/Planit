@@ -113,3 +113,20 @@ export const deleteUser = async (req: Request, res: Response) => {
     await user.remove();
     res.status(200).send({ data: {} });
 };
+
+export const updateMe = async (req: Request, res: Response) => {
+    const user = await User.findById(req.currentUser!.id);
+
+    if (!user) throw new NotFoundError("You do not exist anymore.");
+
+    const { email, username, profilePicture, password } = req.body;
+
+    user.email = email || user.email;
+    user.username = username || user.username;
+    user.profilePicture = profilePicture || user.profilePicture;
+    if (password) user.password = password;
+
+    await user.save();
+
+    res.status(200).send({ data: user });
+};

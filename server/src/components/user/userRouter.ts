@@ -1,6 +1,7 @@
 import express from "express";
 import { currentUser } from "../../middlewares/currentUser";
 import { requireAdmin } from "../../middlewares/requireAdmin";
+import { requireAuth } from "../../middlewares/requireAuth";
 
 import {
     createUser,
@@ -10,6 +11,7 @@ import {
     login,
     logout,
     signup,
+    updateMe,
     updateUser,
 } from "./userController";
 
@@ -19,6 +21,8 @@ const router = express.Router();
 router.post("/auth/signup", signup);
 router.post("/auth/login", login);
 router.post("/auth/logout", logout);
+
+router.put("/update-me", currentUser, requireAuth, updateMe);
 
 //admin only
 router.route("/").all(currentUser, requireAdmin).get(getUsers).post(createUser);

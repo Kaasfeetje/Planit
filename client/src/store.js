@@ -1,7 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { userLoginReducer, userSignupReducer } from "./reducers/userReducers";
+import {
+    updateMeReducer,
+    userLoginReducer,
+    userSignupReducer,
+} from "./reducers/userReducers";
 import {
     deleteBoardReducer,
     fetchFullBoardReducer,
@@ -20,10 +24,12 @@ import {
     setsReducer,
     updateSetReducer,
 } from "./reducers/setReducers";
+import { uploadProfilePictureReducer } from "./reducers/uploadReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userSignup: userSignupReducer,
+    updateMe: updateMeReducer,
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
     updateBoard: updateBoardReducer,
@@ -36,6 +42,7 @@ const reducer = combineReducers({
     createTask: createTaskReducer,
     updateTask: updateTaskReducer,
     deleteTask: deleteTaskReducer,
+    uploadProfilePicture: uploadProfilePictureReducer,
 });
 
 const storedUserInfo = localStorage.getItem("userInfo")

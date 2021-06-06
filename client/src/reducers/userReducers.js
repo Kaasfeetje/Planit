@@ -1,4 +1,8 @@
 import {
+    UPDATE_ME_FAIL,
+    UPDATE_ME_REQUEST,
+    UPDATE_ME_RESET,
+    UPDATE_ME_SUCCESS,
     USER_LOGIN_FAIL,
     USER_LOGIN_REQUEST,
     USER_LOGIN_RESET,
@@ -34,6 +38,21 @@ export const userSignupReducer = (state = {}, action) => {
             return { loading: false, error: action.payload };
         case USER_SIGNUP_RESET:
             return { ...state, success: undefined };
+        default:
+            return state;
+    }
+};
+
+export const updateMeReducer = (state = {}, action) => {
+    switch (action.type) {
+        case UPDATE_ME_REQUEST:
+            return { loading: true };
+        case UPDATE_ME_SUCCESS:
+            return { loading: false, userInfo: action.payload, success: true };
+        case UPDATE_ME_FAIL:
+            return { loading: false, error: action.payload };
+        case UPDATE_ME_RESET:
+            return { ...state, success: false };
         default:
             return state;
     }

@@ -4,6 +4,7 @@ import TaskContextmenu from "./components/ContextMenu/TaskContextmenu";
 import BoardPage from "./components/pages/BoardPage";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
+import ProfilePage from "./components/pages/ProfilePage";
 import SignupPage from "./components/pages/SignupPage";
 
 import { history } from "./history";
@@ -12,6 +13,7 @@ function App() {
         <Router history={history}>
             <Switch>
                 <Route exact path={`/board/:boardId`} component={BoardPage} />
+                <Route exact path="/profile" component={ProfilePage} />
                 <Route exact path="/login" component={LoginPage} />
                 <Route exact path="/signup" component={SignupPage} />
                 <Route exact path="/" component={HomePage} />
