@@ -7,6 +7,7 @@ import {
     userSignupReducer,
 } from "./reducers/userReducers";
 import {
+    createBoardReducer,
     deleteBoardReducer,
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
@@ -24,7 +25,10 @@ import {
     setsReducer,
     updateSetReducer,
 } from "./reducers/setReducers";
-import { uploadProfilePictureReducer } from "./reducers/uploadReducers";
+import {
+    uploadBoardImageReducer,
+    uploadProfilePictureReducer,
+} from "./reducers/uploadReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -32,6 +36,7 @@ const reducer = combineReducers({
     updateMe: updateMeReducer,
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
+    createBoard:createBoardReducer,
     updateBoard: updateBoardReducer,
     deleteBoard: deleteBoardReducer,
     sets: setsReducer,
@@ -43,6 +48,7 @@ const reducer = combineReducers({
     updateTask: updateTaskReducer,
     deleteTask: deleteTaskReducer,
     uploadProfilePicture: uploadProfilePictureReducer,
+    uploadBoardImage: uploadBoardImageReducer,
 });
 
 const storedUserInfo = localStorage.getItem("userInfo")

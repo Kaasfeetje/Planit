@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BoardCard from "../Board/BoardCard";
 import Header from "../common/Header";
 import { fetchMyBoardsAction } from "../../actions/boardActions";
+import { history } from "../../history";
 function HomePage() {
     const dispatch = useDispatch();
 
@@ -18,7 +19,10 @@ function HomePage() {
         boards &&
         boards.map((board) => (
             <Grid key={board.id} item xs={12} md={6} lg={4} xl={3}>
-                <BoardCard board={board} />
+                <BoardCard
+                    board={board}
+                    clickFunction={() => history.push(`/board/${board.id}`)}
+                />
             </Grid>
         ));
 

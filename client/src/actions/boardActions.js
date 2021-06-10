@@ -12,6 +12,9 @@ import {
     DELETE_BOARD_REQUEST,
     DELETE_BOARD_SUCCESS,
     DELETE_BOARD_FAIL,
+    CREATE_BOARD_REQUEST,
+    CREATE_BOARD_SUCCESS,
+    CREATE_BOARD_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -71,6 +74,37 @@ export const fetchFullBoardAction = (boardId) => async (dispatch) => {
         });
     }
 };
+
+export const createBoardAction =
+    (name, description, goal, image) => async (dispatch) => {
+        try {
+            dispatch({
+                type: CREATE_BOARD_REQUEST,
+            });
+
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                },
+            };
+
+            const { data } = await axios.post(
+                `/api/v1/boards`,
+                { name, description, goal, image },
+                config
+            );
+
+            dispatch({ type: CREATE_BOARD_SUCCESS, payload: data.data });
+        } catch (error) {
+            dispatch({
+                type: CREATE_BOARD_FAIL,
+                payload:
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+            });
+        }
+    };
 
 export const updateBoardAction =
     (name, description, goal, boardId) => async (dispatch) => {

@@ -9,7 +9,9 @@ import {
     MenuItem,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,30 +50,35 @@ function Header() {
                     open={Boolean(menuAnchorEl)}
                     onClose={() => setMenuAnchorEl(null)}
                 >
-                    <MenuItem onClick={() => setMenuAnchorEl(null)}>
-                        All Boards
-                    </MenuItem>
-                    <MenuItem onClick={() => setMenuAnchorEl(null)}>
-                        Create Board
-                    </MenuItem>
+                    <Link to="/">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            All Boards
+                        </MenuItem>
+                    </Link>
+                    <Link to="/create">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            Create Board
+                        </MenuItem>
+                    </Link>
                     <hr />
-                    <MenuItem onClick={() => setMenuAnchorEl(null)}>
-                        Profile
-                    </MenuItem>
-                    <MenuItem onClick={() => setMenuAnchorEl(null)}>
-                        My account
-                    </MenuItem>
-                    <MenuItem onClick={() => setMenuAnchorEl(null)}>
-                        Logout
-                    </MenuItem>
+                    <Link to="/profile">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            Profile
+                        </MenuItem>
+                    </Link>
+                    <Link to="/logout">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            Logout
+                        </MenuItem>
+                    </Link>
                 </Menu>
                 <Typography variant="h6" className={classes.title}>
-                    Planit
+                    <Link to="/">Planit</Link>
                 </Typography>
+                <Link to="/create" color="inherit">
+                    <PostAddIcon fontSize="large" />
+                </Link>
                 <IconButton
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-haspopup="true"
                     color="inherit"
                     onClick={(e) => setProfileAnchorEl(e.currentTarget)}
                 >
@@ -83,8 +90,16 @@ function Header() {
                     anchorEl={profileAnchorEl}
                     keepMounted
                 >
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem>All Boards</MenuItem>
+                    <Link to="/profile">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            Profile
+                        </MenuItem>
+                    </Link>
+                    <Link to="/">
+                        <MenuItem onClick={() => setMenuAnchorEl(null)}>
+                            All Boards
+                        </MenuItem>
+                    </Link>
                 </Menu>
             </Toolbar>
         </AppBar>

@@ -72,7 +72,6 @@ function Profile() {
 
     useEffect(() => {
         if (success) {
-            console.log("test");
             dispatch({ type: UPDATE_ME_RESET });
             window.location.reload();
         }

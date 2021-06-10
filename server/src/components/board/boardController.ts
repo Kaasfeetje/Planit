@@ -16,13 +16,13 @@ export const GetBoards = async (req: Request, res: Response) => {
 
 export const CreateBoard = async (req: Request, res: Response) => {
     //TODO: image support
-    const { name, description, goal } = req.body;
+    const { name, description, goal, image } = req.body;
     const board = await Board.build({
         name,
         description,
         goal,
         ownerRef: req.currentUser!.id,
-        image: "/uploads/boards/default.png",
+        image,
     });
 
     await board.save();

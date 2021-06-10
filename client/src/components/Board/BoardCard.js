@@ -9,7 +9,6 @@ import {
     Typography,
 } from "@material-ui/core";
 import React from "react";
-import { history } from "../../history";
 
 const useStyles = makeStyles({
     root: {
@@ -27,12 +26,14 @@ function BoardCard({
         description: "Description...",
         image: "https://via.placeholder.com/255x140",
     },
+    preview,
+    clickFunction,
 }) {
     const classes = useStyles();
 
     return (
         <Card>
-            <CardActionArea onClick={() => history.push(`/board/${board.id}`)}>
+            <CardActionArea onClick={() => !preview && clickFunction()}>
                 <CardMedia
                     image={board.image}
                     className={classes.media}
@@ -58,7 +59,7 @@ function BoardCard({
                 <Button
                     size="small"
                     color="primary"
-                    onClick={() => history.push(`/board/${board.id}`)}
+                    onClick={() => !preview && clickFunction()}
                 >
                     Open
                 </Button>

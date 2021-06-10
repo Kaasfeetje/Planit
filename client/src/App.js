@@ -2,6 +2,7 @@ import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import TaskContextmenu from "./components/ContextMenu/TaskContextmenu";
 import BoardPage from "./components/pages/BoardPage";
+import CreatePage from "./components/pages/CreatePage";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
 import ProfilePage from "./components/pages/ProfilePage";
@@ -13,6 +14,7 @@ function App() {
         <Router history={history}>
             <Switch>
                 <Route exact path={`/board/:boardId`} component={BoardPage} />
+                <Route exact path="/create" component={CreatePage} />
                 <Route exact path="/profile" component={ProfilePage} />
                 <Route exact path="/login" component={LoginPage} />
                 <Route exact path="/signup" component={SignupPage} />

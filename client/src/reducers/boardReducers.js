@@ -1,4 +1,7 @@
 import {
+    CREATE_BOARD_FAIL,
+    CREATE_BOARD_REQUEST,
+    CREATE_BOARD_SUCCESS,
     DELETE_BOARD_FAIL,
     DELETE_BOARD_REQUEST,
     DELETE_BOARD_RESET,
@@ -41,6 +44,19 @@ export const fetchFullBoardReducer = (state = {}, action) => {
 
         case UPDATE_BOARD_SUCCESS:
             return { loading: false, board: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const createBoardReducer = (state = {}, action) => {
+    switch (action.type) {
+        case CREATE_BOARD_REQUEST:
+            return { loading: true };
+        case CREATE_BOARD_SUCCESS:
+            return { loading: false, board: action.payload, success: true };
+        case CREATE_BOARD_FAIL:
+            return { loading: false, error: action.payload };
         default:
             return state;
     }

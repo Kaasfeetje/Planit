@@ -56,9 +56,9 @@ export const resizeBoardImage = async (
     next: NextFunction
 ) => {
     const file = req.file;
-    const filename = `uploads/${file.fieldname}/${
-        req.body.boardId
-    }${path.extname(file.originalname)}`;
+    const filename = `uploads/${file.fieldname}/${Date.now()}${path.extname(
+        file.originalname
+    )}`;
 
     await sharp(file.buffer)
         .resize(1580, 560)
