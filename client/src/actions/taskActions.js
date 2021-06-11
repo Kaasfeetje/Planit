@@ -170,11 +170,11 @@ export const isCompletedTaskAction =
         }
     };
 
-export const switchTasksAction = (taskId, setId) => async (dispatch) => {
+export const switchTasksAction = (taskId, setId, index) => async (dispatch) => {
     try {
         dispatch({
             type: SWITCH_TASK_REQUEST,
-            payload: { taskId, setId },
+            payload: { taskId, setId, index },
         });
 
         const config = {
@@ -185,7 +185,7 @@ export const switchTasksAction = (taskId, setId) => async (dispatch) => {
 
         const { data } = await axios.post(
             "/api/v1/tasks/switch-set",
-            { taskId, setId },
+            { taskId, setId, index },
             config
         );
 

@@ -157,7 +157,7 @@ export const swapTasks = async (req: Request, res: Response) => {
 };
 
 export const switchTaskSet = async (req: Request, res: Response) => {
-    const { setId, taskId } = req.body;
+    const { setId, taskId, index } = req.body;
     const set = await Set.findById(setId);
     const task = await Task.findById(taskId);
 
@@ -181,6 +181,7 @@ export const switchTaskSet = async (req: Request, res: Response) => {
         );
 
     task.setRef = set.id;
+    task.index = index;
     await task.save();
 
     res.status(200).send({ data: { id: task.id } });

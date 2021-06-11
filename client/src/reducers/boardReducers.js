@@ -89,3 +89,16 @@ export const deleteBoardReducer = (state = {}, action) => {
             return state;
     }
 };
+
+export const joinBoardReducer = (state = {}, action) => {
+    switch (action.type) {
+        case CREATE_BOARD_REQUEST:
+            return { loading: true };
+        case CREATE_BOARD_SUCCESS:
+            return { loading: false, success: true };
+        case CREATE_BOARD_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};

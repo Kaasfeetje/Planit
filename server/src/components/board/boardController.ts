@@ -92,12 +92,36 @@ export const deleteBoard = async (req: Request, res: Response) => {
 
 export const getMyBoards = async (req: Request, res: Response) => {
     //TODO: Add joined boards
-    const boards = await Board.find({ ownerRef: req.currentUser!.id });
+    // const boards = await Board.find({ ownerRef: req.currentUser!.id });
+
+    const boardAccesses = await BoardAccess.find({
+        userRef: req.currentUser!.id,
+    })
+        .populate("boardRef")
+        .select("boardRef");
+
+    const boards = boardAccesses.map((board) => board.boardRef);
 
     res.status(200).send({ data: boards });
 };
 
 export const getFullBoardById = async (req: Request, res: Response) => {
+    //permissions
+    const canMove = await hasBoardPermission(
+        [
+            board_access_levels.view,
+            board_access_levels.move,
+            board_access_levels.edit,
+            board_access_levels.owner,
+        ],
+        req.currentUser!.id,
+        req.params.boardId
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to view this board"
+        );
+
     const board = await Board.findById(req.params.boardId).populate("ownerRef");
 
     if (!board)

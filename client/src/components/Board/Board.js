@@ -96,8 +96,8 @@ function Board({ board, match }) {
     const dropHandler = (set) => {
         if (taskDragging) {
             if (taskDragging.setRef === set.id) return;
-            //switch set action
-            dispatch(switchTasksAction(taskDragging.id, set.id));
+            const length = tasks.filter((t) => t.setRef === set.id).length;
+            dispatch(switchTasksAction(taskDragging.id, set.id, length));
         }
 
         if (!dragging) return;

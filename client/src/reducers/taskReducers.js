@@ -90,7 +90,8 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
             newTasks = switchTasks(
                 state.tasks,
                 action.payload.taskId,
-                action.payload.setId
+                action.payload.setId,
+                action.payload.index
             );
             return {
                 tasks: newTasks,
@@ -171,10 +172,11 @@ const swapTasks = (tasks, aId, bId) => {
     return newTasks.sort((_a, _b) => _a.index - _b.index);
 };
 
-const switchTasks = (tasks, taskId, setId) => {
+const switchTasks = (tasks, taskId, setId, index) => {
     //switches a tasks set
     const a = tasks.filter((task) => task.id === taskId)[0];
     a.setRef = setId;
+    a.index = index;
 
     const newTasks = tasks.filter((task) => task.id !== taskId);
     newTasks.push(a);

@@ -15,6 +15,9 @@ import {
     CREATE_BOARD_REQUEST,
     CREATE_BOARD_SUCCESS,
     CREATE_BOARD_FAIL,
+    JOIN_BOARD_REQUEST,
+    JOIN_BOARD_SUCCESS,
+    JOIN_BOARD_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -158,6 +161,35 @@ export const deleteBoardAction = (boardId) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: DELETE_BOARD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const joinBoardAction = (boardId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: JOIN_BOARD_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.post(
+            `/api/v1/boards/${boardId}/join`,
+            config
+        );
+
+        dispatch({ type: JOIN_BOARD_SUCCESS, payload: data.data });
+    } catch (error) {
+        dispatch({
+            type: JOIN_BOARD_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message

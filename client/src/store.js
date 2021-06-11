@@ -11,6 +11,7 @@ import {
     deleteBoardReducer,
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
+    joinBoardReducer,
     updateBoardReducer,
 } from "./reducers/boardReducers";
 import {
@@ -36,9 +37,10 @@ const reducer = combineReducers({
     updateMe: updateMeReducer,
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
-    createBoard:createBoardReducer,
+    createBoard: createBoardReducer,
     updateBoard: updateBoardReducer,
     deleteBoard: deleteBoardReducer,
+    joinBoard: joinBoardReducer,
     sets: setsReducer,
     createSet: createSetReducer,
     updateSet: updateSetReducer,

@@ -13,6 +13,7 @@ function App() {
     return (
         <Router history={history}>
             <Switch>
+                <Route exact path={`/:boardId/join`} component={BoardPage} />
                 <Route exact path={`/board/:boardId`} component={BoardPage} />
                 <Route exact path="/create" component={CreatePage} />
                 <Route exact path="/profile" component={ProfilePage} />

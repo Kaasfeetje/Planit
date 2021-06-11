@@ -5,6 +5,8 @@ import Board from "../Board/Board";
 import Header from "../common/Header";
 import { fetchFullBoardAction } from "../../actions/boardActions";
 import { FETCH_FULL_BOARD_RESET } from "../../actions/types";
+import BoardJoinModal from "../Board/BoardJoinModal";
+import { history } from "../../history";
 
 function BoardPage({ match }) {
     const dispatch = useDispatch();
@@ -26,6 +28,13 @@ function BoardPage({ match }) {
             <Container>
                 {loading && <CircularProgress />}
                 {board && <Board board={board} match={match} />}
+                {match.path.includes("/join") && (
+                    <BoardJoinModal
+                        board={board}
+                        open={true}
+                        onClose={() => history.push("/")}
+                    />
+                )}
             </Container>
         </div>
     );
