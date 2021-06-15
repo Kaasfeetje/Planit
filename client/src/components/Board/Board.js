@@ -73,6 +73,7 @@ function Board({ board, match }) {
 
     useEffect(() => {
         const onScroll = (e) => {
+            e.preventDefault();
             const d = Math.abs(e.wheelDelta) / 2;
             if (document.body.doScroll)
                 document.body.doScroll(e.wheelDelta > 0 ? "left" : "right");
@@ -81,8 +82,8 @@ function Board({ board, match }) {
             else ref.current.scrollLeft += d;
             return false;
         };
-
-        document.body.addEventListener("wheel", onScroll);
+        if (!ref.current) return;
+        document.body.addEventListener("wheel", onScroll, { passive: false });
         return () => document.body.removeEventListener("wheel", onScroll);
     }, [ref]);
 
@@ -95,9 +96,11 @@ function Board({ board, match }) {
 
     const dropHandler = (set) => {
         if (taskDragging) {
+            setTaskDragging(undefined);
             if (taskDragging.setRef === set.id) return;
-            const length = tasks.filter((t) => t.setRef === set.id).length;
-            dispatch(switchTasksAction(taskDragging.id, set.id, length));
+            const tempTasks = tasks.filter((t) => t.setRef === set.id);
+            const newIndex = tempTasks[tempTasks.length - 1].index + 1;
+            dispatch(switchTasksAction(taskDragging.id, set.id, newIndex));
         }
 
         if (!dragging) return;

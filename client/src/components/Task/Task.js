@@ -1,5 +1,5 @@
 import { Button, makeStyles } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import TaskModal from "./TaskModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -8,12 +8,20 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 0,
         margin: "0.25rem 0",
     },
+    draggedOver: {
+        backgroundColor: theme.palette.info.main,
+        color: theme.palette.info.contrastText,
+        borderColor: theme.palette.info.main,
+    },
 }));
 
 function Task({ task, onDragStart, onDragEnd, onDrop }) {
     const classes = useStyles();
+    const ref = useRef();
+
     const [taskModalOpen, setTaskModalOpen] = useState(false);
 
+    const [draggedOver, setDraggedOver] = useState(0);
     return (
         <>
             <TaskModal
@@ -22,19 +30,23 @@ function Task({ task, onDragStart, onDragEnd, onDrop }) {
                 task={task}
             />
             <Button
+                ref={ref}
                 onDragStart={(e) => {
-                    // e.preventDefault();
                     e.stopPropagation();
                     onDragStart(e);
                 }}
                 draggable
                 onDragEnd={onDragEnd}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={onDrop}
+                onDragEnter={(e) => setDraggedOver(draggedOver + 1)}
+                onDragLeave={(e) => setDraggedOver(draggedOver - 1)}
+                onDrop={() => {
+                    onDrop();
+                    setDraggedOver(0);
+                }}
                 onClick={(e) => setTaskModalOpen(true)}
                 className={`${classes.task} task-context-menu ${
                     task.isCompleted ? "task-completed" : ""
-                }`}
+                } ${draggedOver > 0 ? classes.draggedOver : ""}`}
                 variant="outlined"
                 color={task.isCompleted ? "secondary" : "default"}
                 disableElevation

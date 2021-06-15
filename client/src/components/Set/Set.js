@@ -63,14 +63,21 @@ function Set({
         e.preventDefault();
         if (newTask === "") return;
 
-        dispatch(createTaskAction(newTask, tasks.length, set.boardRef, set.id));
+        dispatch(
+            createTaskAction(
+                newTask,
+                tasks[tasks.length - 1].index + 1,
+                set.boardRef,
+                set.id
+            )
+        );
         setAddingTask(false);
         setNewTask("");
     };
 
     return (
         <div
-            className={classes.set}
+            className={`${classes.set} set`}
             draggable
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}

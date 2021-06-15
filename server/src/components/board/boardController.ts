@@ -85,6 +85,7 @@ export const deleteBoard = async (req: Request, res: Response) => {
 
     await Task.deleteMany({ boardRef: board.id });
     await Set.deleteMany({ boardRef: board.id });
+    await BoardAccess.deleteMany({ boardRef: board.id });
 
     await board.remove();
     res.status(200).send({ data: {} });
