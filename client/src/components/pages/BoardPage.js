@@ -3,7 +3,10 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Board from "../Board/Board";
 import Header from "../common/Header";
-import { fetchFullBoardAction } from "../../actions/boardActions";
+import {
+    fetchFullBoardAction,
+    getBoardUsersAction,
+} from "../../actions/boardActions";
 import { FETCH_FULL_BOARD_RESET } from "../../actions/types";
 import BoardJoinModal from "../Board/BoardJoinModal";
 import { history } from "../../history";
@@ -16,6 +19,7 @@ function BoardPage({ match }) {
 
     useEffect(() => {
         dispatch(fetchFullBoardAction(match.params.boardId));
+        dispatch(getBoardUsersAction(match.params.boardId));
 
         return () => {
             dispatch({ type: FETCH_FULL_BOARD_RESET });

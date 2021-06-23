@@ -18,6 +18,12 @@ import {
     JOIN_BOARD_REQUEST,
     JOIN_BOARD_SUCCESS,
     JOIN_BOARD_FAIL,
+    GET_BOARD_USERS_REQUEST,
+    GET_BOARD_USERS_SUCCESS,
+    GET_BOARD_USERS_FAIL,
+    UPDATE_BOARD_ACCESS_REQUEST,
+    UPDATE_BOARD_ACCESS_SUCCESS,
+    UPDATE_BOARD_ACCESS_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -197,3 +203,67 @@ export const joinBoardAction = (boardId) => async (dispatch) => {
         });
     }
 };
+
+export const getBoardUsersAction = (boardId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: GET_BOARD_USERS_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.get(
+            `/api/v1/boards/${boardId}/users`,
+            config
+        );
+
+        dispatch({ type: GET_BOARD_USERS_SUCCESS, payload: data.data });
+    } catch (error) {
+        dispatch({
+            type: GET_BOARD_USERS_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const updateUserBoardAccessAction =
+    (boardId, userId, access) => async (dispatch) => {
+        console.log(userId);
+        try {
+            dispatch({
+                type: UPDATE_BOARD_ACCESS_REQUEST,
+            });
+
+            const config = {
+                headers: {
+                    "content-type": "application/json",
+                },
+            };
+
+            const { data } = await axios.put(
+                `/api/v1/boards/${boardId}/update-access`,
+                { userId, access },
+                config
+            );
+
+            dispatch({
+                type: UPDATE_BOARD_ACCESS_SUCCESS,
+                payload: data.data,
+            });
+        } catch (error) {
+            dispatch({
+                type: UPDATE_BOARD_ACCESS_FAIL,
+                payload:
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+            });
+        }
+    };

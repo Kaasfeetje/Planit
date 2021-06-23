@@ -177,3 +177,57 @@ export const hasBoardPermission = async (
 
     if (access_levels.includes(boardAccess.access)) return true;
 };
+
+export const getBoardsUsers = async (req: Request, res: Response) => {
+    //permissions
+    const canMove = await hasBoardPermission(
+        [
+            board_access_levels.view,
+            board_access_levels.move,
+            board_access_levels.edit,
+            board_access_levels.owner,
+        ],
+        req.currentUser!.id,
+        req.params.boardId
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to view this board."
+        );
+
+    const boardAccesses = await BoardAccess.find({
+        boardRef: req.params.boardId,
+        access: { $ne: board_access_levels.owner },
+    }).populate("userRef");
+
+    const users = boardAccesses.map((access) => {
+        return { userRef: access.userRef, access: access.access };
+    });
+    res.status(200).send({ data: users });
+};
+
+export const updateBoardsUserAccess = async (req: Request, res: Response) => {
+    //permissions
+    const canMove = await hasBoardPermission(
+        [board_access_levels.owner],
+        req.currentUser!.id,
+        req.params.boardId
+    );
+    if (!canMove && !req.currentUser!.isAdmin)
+        throw new NoPermissionError(
+            "You do not have permission to edit users access to this board."
+        );
+
+    const { userId, access } = req.body;
+    const boardAccess = await BoardAccess.findOne({ userRef: userId }).populate(
+        "userRef"
+    );
+    console.log(userId);
+    if (!boardAccess)
+        throw new NotFoundError("This user does not have access to this room.");
+
+    boardAccess.access = access || boardAccess.access;
+    await boardAccess.save();
+
+    res.status(200).send({ data: boardAccess });
+};

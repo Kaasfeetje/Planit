@@ -7,14 +7,17 @@ import {
     Modal,
     TextField,
     Typography,
+    Menu,
+    MenuItem,
 } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import UserCard from "../common/UserCard";
 import {
     deleteBoardAction,
     updateBoardAction,
+    updateUserBoardAccessAction,
 } from "../../actions/boardActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,39 +47,38 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
         marginLeft: theme.spacing(1),
     },
+    access: {
+        display: "flex",
+        alignItems: "center",
+    },
 }));
+
+const accessOptions = [
+    { value: "view", name: "View" },
+    { value: "move", name: "Move" },
+    { value: "edit", name: "Edit" },
+];
 
 function BoardModal({ open, onClose, board }) {
     const classes = useStyles();
-    const [boardDetails] = useState({
-        access: [
-            {
-                id: 0,
-                username: "Kaasfeetje",
-                email: "kaasfeetje@example.com",
-                profilePicture: "https://via.placeholder.com/255x255",
-            },
-            {
-                id: 1,
-                username: "John",
-                email: "John@example.com",
-                profilePicture: "https://via.placeholder.com/255x255",
-            },
-            {
-                id: 2,
-                username: "Jane",
-                email: "Jane@example.com",
-                profilePicture: "https://via.placeholder.com/255x255",
-            },
-        ],
-    });
+    const dispatch = useDispatch();
+
+    const getBoardUsers = useSelector((state) => state.getBoardUsers);
+    const { boardAccesses } = getBoardUsers;
+
+    const [accessMenuAnchorEl, setAccessMenuAnchorEl] = useState(undefined);
 
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(board.name || "");
     const [description, setDescription] = useState(board.description || "");
     const [goal, setGoal] = useState(board.goal || "");
+    const [userAccesses, setUserAccesses] = useState(boardAccesses || []);
 
-    const dispatch = useDispatch();
+    const [updatedAccesses, setUpdatedAccesses] = useState([]);
+
+    useEffect(() => {
+        setUserAccesses(boardAccesses);
+    }, [boardAccesses]);
 
     const saveHandler = (e) => {
         if (
@@ -85,6 +87,19 @@ function BoardModal({ open, onClose, board }) {
             goal !== board.goal
         )
             dispatch(updateBoardAction(name, description, goal, board.id));
+
+        if (updatedAccesses) {
+            updatedAccesses.forEach((access) =>
+                dispatch(
+                    updateUserBoardAccessAction(
+                        board.id,
+                        access.userRef.userRef.id,
+                        access.access
+                    )
+                )
+            );
+        }
+        setUpdatedAccesses([]);
         setEditing(false);
     };
 
@@ -93,11 +108,34 @@ function BoardModal({ open, onClose, board }) {
         dispatch(deleteBoardAction(board.id));
     };
 
+    const handleAccessChange = (e, option, index) => {
+        const newUserAccesses = [...userAccesses];
+        const newAccess = {
+            userRef: userAccesses[index],
+            access: option,
+        };
+        newUserAccesses[index] = newAccess;
+        setUserAccesses(newUserAccesses);
+
+        const alreadyUpdated = updatedAccesses.filter(
+            (access) => access.userRef.id !== newAccess.userRef.id
+        );
+
+        setUpdatedAccesses([...alreadyUpdated, newAccess]);
+
+        setAccessMenuAnchorEl(false);
+    };
+
+    const onCloseHandler = (e) => {
+        setEditing(false);
+        onClose();
+    };
+
     return (
         <Modal
             className={classes.modal}
             open={open}
-            onClose={onClose}
+            onClose={onCloseHandler}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{ timeout: 500 }}
@@ -196,8 +234,46 @@ function BoardModal({ open, onClose, board }) {
                         <Typography variant="body2" color="textSecondary">
                             Access:
                         </Typography>
-                        {boardDetails.access.map((user) => (
-                            <UserCard key={user.id} user={user} />
+                        {boardAccesses.map((access, accessIndex) => (
+                            <div
+                                key={access.userRef.id}
+                                className={classes.access}
+                            >
+                                <UserCard user={access.userRef} />
+                                {editing && (
+                                    <>
+                                        <Button
+                                            onClick={(e) =>
+                                                setAccessMenuAnchorEl(e.target)
+                                            }
+                                        >
+                                            {userAccesses[accessIndex].access}
+                                        </Button>
+                                        <Menu
+                                            anchorEl={accessMenuAnchorEl}
+                                            open={Boolean(accessMenuAnchorEl)}
+                                            onClose={(e) =>
+                                                setAccessMenuAnchorEl(undefined)
+                                            }
+                                        >
+                                            {accessOptions.map((option) => (
+                                                <MenuItem
+                                                    key={option.value}
+                                                    onClick={(e) =>
+                                                        handleAccessChange(
+                                                            e,
+                                                            option.value,
+                                                            accessIndex
+                                                        )
+                                                    }
+                                                >
+                                                    {option.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Menu>
+                                    </>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>

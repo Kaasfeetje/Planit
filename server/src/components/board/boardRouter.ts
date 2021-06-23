@@ -6,10 +6,12 @@ import {
     deleteBoard,
     GetBoardById,
     GetBoards,
+    getBoardsUsers,
     getFullBoardById,
     getMyBoards,
     joinBoard,
     UpdateBoard,
+    updateBoardsUserAccess,
 } from "./boardController";
 
 const router = express.Router();
@@ -28,7 +30,14 @@ router
     .put(UpdateBoard)
     .delete(deleteBoard);
 
+router.get("/:boardId/users", currentUser, requireAuth, getBoardsUsers);
 router.get("/:boardId/full", currentUser, requireAuth, getFullBoardById);
 router.post("/:boardId/join", currentUser, requireAuth, joinBoard);
+router.put(
+    "/:boardId/update-access",
+    currentUser,
+    requireAuth,
+    updateBoardsUserAccess
+);
 
 export { router as boardRouter };

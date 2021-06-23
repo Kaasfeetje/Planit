@@ -11,8 +11,11 @@ import {
     deleteBoardReducer,
     fetchFullBoardReducer,
     fetchMyBoardsReducer,
+    getBoardUsersReducer,
     joinBoardReducer,
     updateBoardReducer,
+    updateBoardUsersReducer,
+    updateUserBoardAccessReducer,
 } from "./reducers/boardReducers";
 import {
     createTaskReducer,
@@ -41,6 +44,8 @@ const reducer = combineReducers({
     updateBoard: updateBoardReducer,
     deleteBoard: deleteBoardReducer,
     joinBoard: joinBoardReducer,
+    getBoardUsers: getBoardUsersReducer,
+    updateUserBoardAccess: updateUserBoardAccessReducer,
     sets: setsReducer,
     createSet: createSetReducer,
     updateSet: updateSetReducer,
