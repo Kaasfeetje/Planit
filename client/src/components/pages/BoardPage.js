@@ -10,6 +10,7 @@ import {
 import { FETCH_FULL_BOARD_RESET } from "../../actions/types";
 import BoardJoinModal from "../Board/BoardJoinModal";
 import { history } from "../../history";
+import { getSetResponsibilitiesAction } from "../../actions/setActions";
 
 function BoardPage({ match }) {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ function BoardPage({ match }) {
     useEffect(() => {
         dispatch(fetchFullBoardAction(match.params.boardId));
         dispatch(getBoardUsersAction(match.params.boardId));
+        dispatch(getSetResponsibilitiesAction(match.params.boardId));
 
         return () => {
             dispatch({ type: FETCH_FULL_BOARD_RESET });

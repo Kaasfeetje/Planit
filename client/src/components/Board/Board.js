@@ -66,6 +66,11 @@ function Board({ board, match }) {
     const _tasks = useSelector((state) => state.tasks);
     const { tasks } = _tasks;
 
+    const setResponsibilities = useSelector(
+        (state) => state.setResponsibilities
+    );
+    const { setResponsibilities: responsibilities } = setResponsibilities;
+
     const deleteBoard = useSelector((state) => state.deleteBoard);
     const { success: deleteSuccess } = deleteBoard;
 
@@ -144,6 +149,9 @@ function Board({ board, match }) {
                         key={set.id}
                         set={set}
                         tasks={tasks.filter((task) => task.setRef === set.id)}
+                        responsibilities={responsibilities.filter(
+                            (resp) => resp.setRef === set.id
+                        )}
                         onDragStart={() => setDragging(set)}
                         onDragEnd={() => setDragging(undefined)}
                         onDrop={() => dropHandler(set)}

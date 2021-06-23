@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 function Set({
     set,
     tasks,
+    responsibilities,
     onDragStart,
     onDragEnd,
     onDrop,
@@ -88,6 +89,7 @@ function Set({
                 open={setModalOpen}
                 onClose={() => setSetModalOpen(false)}
                 set={set}
+                setResponsibilities={responsibilities}
             />
             <Typography
                 className={`${classes.setTitle} clickable`}

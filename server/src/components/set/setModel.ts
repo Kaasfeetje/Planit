@@ -11,7 +11,7 @@ interface SetAttrs {
     ownerRef: string;
 }
 
-interface SetDoc extends mongoose.Document {
+export interface SetDoc extends mongoose.Document {
     name: string;
     description: string;
     isCompleted: boolean;

@@ -197,7 +197,6 @@ export const getBoardsUsers = async (req: Request, res: Response) => {
 
     const boardAccesses = await BoardAccess.find({
         boardRef: req.params.boardId,
-        access: { $ne: board_access_levels.owner },
     }).populate("userRef");
 
     const users = boardAccesses.map((access) => {

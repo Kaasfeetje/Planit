@@ -1,4 +1,7 @@
 import {
+    ADD_SET_RESPONSIBILITIES_FAIL,
+    ADD_SET_RESPONSIBILITIES_REQUEST,
+    ADD_SET_RESPONSIBILITIES_SUCCESS,
     CREATE_SET_FAIL,
     CREATE_SET_REQUEST,
     CREATE_SET_SUCCESS,
@@ -7,6 +10,9 @@ import {
     DELETE_SET_SUCCESS,
     FETCH_FULL_BOARD_RESET,
     FETCH_FULL_BOARD_SUCCESS,
+    GET_SET_RESPONSIBILITIES_FAIL,
+    GET_SET_RESPONSIBILITIES_REQUEST,
+    GET_SET_RESPONSIBILITIES_SUCCESS,
     SWAP_SET_FAIL,
     SWAP_SET_REQUEST,
     SWAP_SET_SUCCESS,
@@ -109,6 +115,43 @@ export const deleteSetReducer = (state = {}, action) => {
         case DELETE_SET_SUCCESS:
             return { loading: false, success: true };
         case DELETE_SET_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const getSetResponsibilitiesReducer = (
+    state = { setResponsibilities: [] },
+    action
+) => {
+    switch (action.type) {
+        case GET_SET_RESPONSIBILITIES_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case GET_SET_RESPONSIBILITIES_SUCCESS:
+            return { loading: false, setResponsibilities: action.payload };
+        case GET_SET_RESPONSIBILITIES_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const addSetResponsibilitiesReducer = (
+    state = { setResponsibilities: [] },
+    action
+) => {
+    switch (action.type) {
+        case ADD_SET_RESPONSIBILITIES_REQUEST:
+            return {
+                loading: true,
+            };
+        case ADD_SET_RESPONSIBILITIES_SUCCESS:
+            return { loading: false, setResponsibilities: action.payload };
+        case ADD_SET_RESPONSIBILITIES_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

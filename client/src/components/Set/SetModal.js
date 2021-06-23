@@ -10,11 +10,15 @@ import {
     Typography,
 } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import UserCard from "../common/UserCard";
 import SetResponsibility from "./SetResponsibility";
-import { deleteSetAction, updateSetAction } from "../../actions/setActions";
+import {
+    addSetResponsibilitiesAction,
+    deleteSetAction,
+    updateSetAction,
+} from "../../actions/setActions";
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -56,25 +60,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SetModal({ open, onClose, set }) {
+function SetModal({ open, onClose, set, setResponsibilities }) {
     const classes = useStyles();
 
-    const [setDetails] = useState({
-        responsibilities: [
-            {
-                id: "1",
-                username: "Jane",
-                email: "Jane@example.com",
-                profileImage: "https://via.placeholder.com/255x255",
-            },
-            {
-                id: "0",
-                username: "Kaasfeetje",
-                email: "Kaasfeetje@example.com",
-                profileImage: "https://via.placeholder.com/255x255",
-            },
-        ],
-    });
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(set.name || "");
     const [description, setDescription] = useState(set.description || "");
@@ -83,16 +71,20 @@ function SetModal({ open, onClose, set }) {
         set.projectedAt || undefined
     );
 
-    const [responsibilities, setResponsibilities] = useState(
-        setDetails.responsibilities || []
-    );
+    const [responsibilities, setNewResponsibilities] = useState([]);
 
     const [addUserMenu, setAddUserMenu] = useState(false);
 
     const dispatch = useDispatch();
 
+    const getBoardUsers = useSelector((state) => state.getBoardUsers);
+    const { boardAccesses } = getBoardUsers;
+
+    useEffect(() => {
+        setNewResponsibilities(setResponsibilities.map((res) => res.userRef));
+    }, [setResponsibilities]);
+
     const saveHandler = (e) => {
-        // setSetDetails({ ...setDetails, description, responsibilities });
         if (
             name !== set.name ||
             description !== set.description ||
@@ -108,6 +100,16 @@ function SetModal({ open, onClose, set }) {
                     set.id
                 )
             );
+        if (responsibilities !== setResponsibilities) {
+            dispatch(
+                addSetResponsibilitiesAction(
+                    set.boardRef,
+                    set.id,
+                    responsibilities.map((user) => user.id)
+                )
+            );
+        }
+
         setEditing(false);
     };
 
@@ -287,10 +289,11 @@ function SetModal({ open, onClose, set }) {
                         <SetResponsibility
                             editing={editing}
                             responsibilities={responsibilities}
-                            setResponsibilities={setResponsibilities}
+                            setResponsibilities={setNewResponsibilities}
                             setAddUserMenu={setAddUserMenu}
                             addUserMenu={addUserMenu}
-                            setDetails={setDetails}
+                            setDetails={setResponsibilities}
+                            boardAccesses={boardAccesses}
                         />
                     </div>
                 </div>

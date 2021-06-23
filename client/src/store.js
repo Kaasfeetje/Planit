@@ -24,8 +24,10 @@ import {
     updateTaskReducer,
 } from "./reducers/taskReducers";
 import {
+    addSetResponsibilitiesReducer,
     createSetReducer,
     deleteSetReducer,
+    getSetResponsibilitiesReducer,
     setsReducer,
     updateSetReducer,
 } from "./reducers/setReducers";
@@ -50,6 +52,8 @@ const reducer = combineReducers({
     createSet: createSetReducer,
     updateSet: updateSetReducer,
     deleteSet: deleteSetReducer,
+    setResponsibilities: getSetResponsibilitiesReducer,
+    addSetResponsibilities: addSetResponsibilitiesReducer,
     tasks: tasksReducer,
     createTask: createTaskReducer,
     updateTask: updateTaskReducer,

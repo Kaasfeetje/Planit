@@ -29,8 +29,15 @@ function SetResponsibility({
     setAddUserMenu,
     addUserMenu,
     setDetails,
+    boardAccesses,
 }) {
     const classes = useStyles();
+
+    const addUser = (e, user) => {
+        const newUsers = responsibilities.filter((res) => res.id !== user.id);
+        setResponsibilities([...newUsers, user]);
+        setAddUserMenu(null);
+    };
 
     return (
         <div className={classes.description}>
@@ -43,20 +50,21 @@ function SetResponsibility({
             </Typography>
             {editing ? (
                 <>
-                    {responsibilities.map((user) => (
-                        <ResponsibilityCard
-                            key={user.id}
-                            user={user}
-                            editing={editing}
-                            onRemove={(e) =>
-                                setResponsibilities(
-                                    responsibilities.filter(
-                                        (usr) => usr.id !== user.id
+                    {responsibilities !== undefined &&
+                        responsibilities.map((user) => (
+                            <ResponsibilityCard
+                                key={user.id}
+                                user={user}
+                                editing={editing}
+                                onRemove={(e) =>
+                                    setResponsibilities(
+                                        responsibilities.filter(
+                                            (usr) => usr.id !== user.id
+                                        )
                                     )
-                                )
-                            }
-                        />
-                    ))}
+                                }
+                            />
+                        ))}
                     <div className={classes.center}>
                         <Button
                             onClick={(e) => setAddUserMenu(e.currentTarget)}
@@ -69,20 +77,19 @@ function SetResponsibility({
                         open={Boolean(addUserMenu)}
                         onClose={(e) => setAddUserMenu(null)}
                     >
-                        <MenuItem onClick={(e) => setAddUserMenu(null)}>
-                            User 1
-                        </MenuItem>
-                        <MenuItem onClick={(e) => setAddUserMenu(null)}>
-                            User 2
-                        </MenuItem>
-                        <MenuItem onClick={(e) => setAddUserMenu(null)}>
-                            User 3
-                        </MenuItem>
+                        {boardAccesses.map((boardAccess) => (
+                            <MenuItem
+                                key={boardAccess.userRef.id}
+                                onClick={(e) => addUser(e, boardAccess.userRef)}
+                            >
+                                {boardAccess.userRef.username}
+                            </MenuItem>
+                        ))}
                     </Menu>
                 </>
             ) : (
-                setDetails.responsibilities.map((user) => (
-                    <ResponsibilityCard key={user.id} user={user} />
+                setDetails.map((user) => (
+                    <ResponsibilityCard key={user.id} user={user.userRef} />
                 ))
             )}
         </div>
