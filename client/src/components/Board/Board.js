@@ -74,6 +74,8 @@ function Board({ board, match }) {
     const deleteBoard = useSelector((state) => state.deleteBoard);
     const { success: deleteSuccess } = deleteBoard;
 
+    const { canEdit } = useSelector((state) => state.canEdit);
+
     const ref = useRef();
 
     useEffect(() => {
@@ -160,49 +162,53 @@ function Board({ board, match }) {
                         taskDragging={taskDragging}
                     />
                 ))}
-                <div className={classes.set}>
-                    <div className={classes.addSet}>
-                        {addingSet ? (
-                            <form
-                                onSubmit={onAddSet}
-                                onBlur={(e) => {
-                                    if (
-                                        e.relatedTarget &&
-                                        e.relatedTarget.type === "submit"
-                                    )
-                                        return;
-                                    setNewSet("");
-                                    setAddingSet(false);
-                                }}
-                            >
-                                <input
-                                    value={newSet}
-                                    onChange={(e) => setNewSet(e.target.value)}
-                                    className={classes.setAddInput}
-                                ></input>
-                                <div className={classes.setAddBtn}>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                    >
-                                        Add set
-                                    </Button>
-                                </div>
-                            </form>
-                        ) : (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                className={classes.addSetButton}
-                                onClick={(e) => setAddingSet(true)}
-                            >
-                                New Set...
-                            </Button>
-                        )}
+                {canEdit && (
+                    <div className={classes.set}>
+                        <div className={classes.addSet}>
+                            {addingSet ? (
+                                <form
+                                    onSubmit={onAddSet}
+                                    onBlur={(e) => {
+                                        if (
+                                            e.relatedTarget &&
+                                            e.relatedTarget.type === "submit"
+                                        )
+                                            return;
+                                        setNewSet("");
+                                        setAddingSet(false);
+                                    }}
+                                >
+                                    <input
+                                        value={newSet}
+                                        onChange={(e) =>
+                                            setNewSet(e.target.value)
+                                        }
+                                        className={classes.setAddInput}
+                                    ></input>
+                                    <div className={classes.setAddBtn}>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            Add set
+                                        </Button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    className={classes.addSetButton}
+                                    onClick={(e) => setAddingSet(true)}
+                                >
+                                    New Set...
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </Paper>
         </>
     );

@@ -4,6 +4,7 @@ import { requireAuth } from "../../middlewares/requireAuth";
 import {
     CreateBoard,
     deleteBoard,
+    fetchJoinBoardInfo,
     GetBoardById,
     GetBoards,
     getBoardsUsers,
@@ -33,6 +34,7 @@ router
 router.get("/:boardId/users", currentUser, requireAuth, getBoardsUsers);
 router.get("/:boardId/full", currentUser, requireAuth, getFullBoardById);
 router.post("/:boardId/join", currentUser, requireAuth, joinBoard);
+router.get("/:boardId/join-info", currentUser, requireAuth, fetchJoinBoardInfo);
 router.put(
     "/:boardId/update-access",
     currentUser,

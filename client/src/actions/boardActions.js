@@ -24,6 +24,9 @@ import {
     UPDATE_BOARD_ACCESS_REQUEST,
     UPDATE_BOARD_ACCESS_SUCCESS,
     UPDATE_BOARD_ACCESS_FAIL,
+    FETCH_JOIN_BOARD_REQUEST,
+    FETCH_JOIN_BOARD_SUCCESS,
+    FETCH_JOIN_BOARD_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -235,7 +238,6 @@ export const getBoardUsersAction = (boardId) => async (dispatch) => {
 
 export const updateUserBoardAccessAction =
     (boardId, userId, access) => async (dispatch) => {
-        console.log(userId);
         try {
             dispatch({
                 type: UPDATE_BOARD_ACCESS_REQUEST,
@@ -267,3 +269,35 @@ export const updateUserBoardAccessAction =
             });
         }
     };
+
+export const fetchJoinBoardAction = (boardId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: FETCH_JOIN_BOARD_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.get(
+            `/api/v1/boards/${boardId}/join-info`,
+            config
+        );
+
+        dispatch({
+            type: FETCH_JOIN_BOARD_SUCCESS,
+            payload: data.data,
+        });
+    } catch (error) {
+        dispatch({
+            type: FETCH_JOIN_BOARD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};

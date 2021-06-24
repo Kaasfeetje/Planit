@@ -9,12 +9,18 @@ import {
     FETCH_FULL_BOARD_FAIL,
     FETCH_FULL_BOARD_REQUEST,
     FETCH_FULL_BOARD_SUCCESS,
+    FETCH_JOIN_BOARD_FAIL,
+    FETCH_JOIN_BOARD_REQUEST,
+    FETCH_JOIN_BOARD_SUCCESS,
     FETCH_MY_BOARDS_FAIL,
     FETCH_MY_BOARDS_REQUEST,
     FETCH_MY_BOARDS_SUCCESS,
     GET_BOARD_USERS_FAIL,
     GET_BOARD_USERS_REQUEST,
     GET_BOARD_USERS_SUCCESS,
+    JOIN_BOARD_FAIL,
+    JOIN_BOARD_REQUEST,
+    JOIN_BOARD_SUCCESS,
     UPDATE_BOARD_ACCESS_FAIL,
     UPDATE_BOARD_ACCESS_REQUEST,
     UPDATE_BOARD_ACCESS_SUCCESS,
@@ -98,11 +104,11 @@ export const deleteBoardReducer = (state = {}, action) => {
 
 export const joinBoardReducer = (state = {}, action) => {
     switch (action.type) {
-        case CREATE_BOARD_REQUEST:
+        case JOIN_BOARD_REQUEST:
             return { loading: true };
-        case CREATE_BOARD_SUCCESS:
+        case JOIN_BOARD_SUCCESS:
             return { loading: false, success: true };
-        case CREATE_BOARD_FAIL:
+        case JOIN_BOARD_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;
@@ -144,6 +150,19 @@ export const updateUserBoardAccessReducer = (
         case UPDATE_BOARD_ACCESS_SUCCESS:
             return { loading: false, boardAccesses: action.payload };
         case UPDATE_BOARD_ACCESS_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const fetchJoinBoardInfoReducer = (state = {}, action) => {
+    switch (action.type) {
+        case FETCH_JOIN_BOARD_REQUEST:
+            return { loading: true };
+        case FETCH_JOIN_BOARD_SUCCESS:
+            return { loading: false, boardInfo: action.payload };
+        case FETCH_JOIN_BOARD_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

@@ -5,10 +5,11 @@ import {
     Modal,
     Typography,
 } from "@material-ui/core";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { joinBoardAction } from "../../actions/boardActions";
 import BoardCard from "./BoardCard";
+import { history } from "../../history";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -27,13 +28,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function BoardJoinModal({ open, onClose, board }) {
+function BoardJoinModal({ open, onClose }) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
 
+    const joinBoardInfo = useSelector((state) => state.joinBoardInfo);
+    const { boardInfo } = joinBoardInfo;
+
+    const joinBoard = useSelector((state) => state.joinBoard);
+    const { success } = joinBoard;
+
+    useEffect(() => {
+        if (success) history.push("/");
+    }, [success]);
+
     const joinHandler = () => {
-        dispatch(joinBoardAction(board.id));
+        dispatch(joinBoardAction(boardInfo.id));
     };
 
     return (
@@ -50,7 +61,11 @@ function BoardJoinModal({ open, onClose, board }) {
                     <Typography className={classes.centerText} variant="h4">
                         Join Room
                     </Typography>
-                    <BoardCard board={board} join clickFunction={joinHandler} />
+                    <BoardCard
+                        board={boardInfo}
+                        join
+                        clickFunction={joinHandler}
+                    />
                 </div>
             </Fade>
         </Modal>

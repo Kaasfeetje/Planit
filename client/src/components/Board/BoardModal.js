@@ -10,6 +10,7 @@ import {
     Menu,
     MenuItem,
 } from "@material-ui/core";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "0.25rem",
         padding: theme.spacing(1),
         marginLeft: theme.spacing(1),
+        color: theme.palette.error.main,
     },
     access: {
         display: "flex",
@@ -65,6 +67,8 @@ function BoardModal({ open, onClose, board }) {
 
     const getBoardUsers = useSelector((state) => state.getBoardUsers);
     const { boardAccesses } = getBoardUsers;
+
+    const { canEdit } = useSelector((state) => state.canEdit);
 
     const [accessMenuAnchorEl, setAccessMenuAnchorEl] = useState(undefined);
 
@@ -171,15 +175,30 @@ function BoardModal({ open, onClose, board }) {
                                     {board.name}
                                 </Typography>
                                 <div>
-                                    <Button onClick={() => setEditing(true)}>
-                                        Edit
-                                    </Button>
-                                    <IconButton
-                                        onClick={deleteHandler}
-                                        className={classes.deleteIcon}
-                                    >
-                                        <DeleteForeverIcon color="error" />
-                                    </IconButton>
+                                    {canEdit ? (
+                                        <>
+                                            <Button
+                                                onClick={() => setEditing(true)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <IconButton
+                                                onClick={deleteHandler}
+                                                className={classes.deleteIcon}
+                                            >
+                                                <DeleteForeverIcon color="error" />
+                                            </IconButton>
+                                        </>
+                                    ) : (
+                                        <Button
+                                            className={classes.deleteIcon}
+                                            endIcon={
+                                                <ExitToAppIcon color="error" />
+                                            }
+                                        >
+                                            Leave
+                                        </Button>
+                                    )}
                                 </div>
                             </>
                         )}

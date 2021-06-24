@@ -22,6 +22,8 @@ function Task({ task, onDragStart, onDragEnd, onDrop }) {
     const [taskModalOpen, setTaskModalOpen] = useState(false);
 
     const [draggedOver, setDraggedOver] = useState(0);
+
+    
     return (
         <>
             <TaskModal

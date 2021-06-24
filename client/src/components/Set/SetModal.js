@@ -80,6 +80,8 @@ function SetModal({ open, onClose, set, setResponsibilities }) {
     const getBoardUsers = useSelector((state) => state.getBoardUsers);
     const { boardAccesses } = getBoardUsers;
 
+    const { canEdit } = useSelector((state) => state.canEdit);
+
     useEffect(() => {
         setNewResponsibilities(setResponsibilities.map((res) => res.userRef));
     }, [setResponsibilities]);
@@ -158,15 +160,21 @@ function SetModal({ open, onClose, set, setResponsibilities }) {
                                     {set.name}
                                 </Typography>
                                 <div>
-                                    <Button onClick={() => setEditing(true)}>
-                                        Edit
-                                    </Button>
-                                    <IconButton
-                                        onClick={deleteHandler}
-                                        className={classes.deleteIcon}
-                                    >
-                                        <DeleteForeverIcon color="error" />
-                                    </IconButton>
+                                    {canEdit && (
+                                        <>
+                                            <Button
+                                                onClick={() => setEditing(true)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <IconButton
+                                                onClick={deleteHandler}
+                                                className={classes.deleteIcon}
+                                            >
+                                                <DeleteForeverIcon color="error" />
+                                            </IconButton>
+                                        </>
+                                    )}
                                 </div>
                             </>
                         )}

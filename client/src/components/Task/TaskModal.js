@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteTaskAction, updateTaskAction } from "../../actions/taskActions";
 import UserCard from "../common/UserCard";
 
@@ -53,6 +53,7 @@ function TaskModal({ open, onClose, task }) {
     const [isCompleted, setIsCompleted] = useState(task.isCompleted || false);
 
     const dispatch = useDispatch();
+    const { canEdit } = useSelector((state) => state.canEdit);
 
     const saveHandler = (e) => {
         if (
@@ -112,15 +113,21 @@ function TaskModal({ open, onClose, task }) {
                                     {task.task}
                                 </Typography>
                                 <div>
-                                    <Button onClick={() => setEditing(true)}>
-                                        Edit
-                                    </Button>
-                                    <IconButton
-                                        onClick={deleteHandler}
-                                        className={classes.deleteIcon}
-                                    >
-                                        <DeleteForeverIcon color="error" />
-                                    </IconButton>
+                                    {canEdit && (
+                                        <>
+                                            <Button
+                                                onClick={() => setEditing(true)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <IconButton
+                                                onClick={deleteHandler}
+                                                className={classes.deleteIcon}
+                                            >
+                                                <DeleteForeverIcon color="error" />
+                                            </IconButton>
+                                        </>
+                                    )}
                                 </div>
                             </>
                         )}

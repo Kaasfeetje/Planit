@@ -1,6 +1,6 @@
 import { Button, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTaskAction, swapTasksAction } from "../../actions/taskActions";
 import Task from "../Task/Task";
 import SetModal from "./SetModal";
@@ -52,6 +52,8 @@ function Set({
     const [setModalOpen, setSetModalOpen] = useState(false);
 
     const dispatch = useDispatch();
+
+    const { canEdit } = useSelector((state) => state.canEdit);
 
     const dropHandler = (task) => {
         // console.log("task", task, " dragging", taskDragging);
@@ -139,15 +141,17 @@ function Set({
                         </div>
                     </form>
                 ) : (
-                    <div className={classes.setAddBtn}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={(e) => setAddingTask(true)}
-                        >
-                            New Task...
-                        </Button>
-                    </div>
+                    canEdit && (
+                        <div className={classes.setAddBtn}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => setAddingTask(true)}
+                            >
+                                New Task...
+                            </Button>
+                        </div>
+                    )
                 )}
             </div>
         </div>

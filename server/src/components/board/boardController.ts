@@ -221,7 +221,6 @@ export const updateBoardsUserAccess = async (req: Request, res: Response) => {
     const boardAccess = await BoardAccess.findOne({ userRef: userId }).populate(
         "userRef"
     );
-    console.log(userId);
     if (!boardAccess)
         throw new NotFoundError("This user does not have access to this room.");
 
@@ -229,4 +228,15 @@ export const updateBoardsUserAccess = async (req: Request, res: Response) => {
     await boardAccess.save();
 
     res.status(200).send({ data: boardAccess });
+};
+
+export const fetchJoinBoardInfo = async (req: Request, res: Response) => {
+    const board = await Board.findById(req.params.boardId);
+
+    if (!board)
+        throw new NotFoundError(
+            `Did not find a board with id: ${req.params.boardId}`
+        );
+
+    res.status(200).send({ data: board });
 };

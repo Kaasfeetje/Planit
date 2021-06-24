@@ -10,6 +10,7 @@ import {
     createBoardReducer,
     deleteBoardReducer,
     fetchFullBoardReducer,
+    fetchJoinBoardInfoReducer,
     fetchMyBoardsReducer,
     getBoardUsersReducer,
     joinBoardReducer,
@@ -35,6 +36,7 @@ import {
     uploadBoardImageReducer,
     uploadProfilePictureReducer,
 } from "./reducers/uploadReducers";
+import { canEditReducer } from "./reducers/otherReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -46,6 +48,7 @@ const reducer = combineReducers({
     updateBoard: updateBoardReducer,
     deleteBoard: deleteBoardReducer,
     joinBoard: joinBoardReducer,
+    joinBoardInfo: fetchJoinBoardInfoReducer,
     getBoardUsers: getBoardUsersReducer,
     updateUserBoardAccess: updateUserBoardAccessReducer,
     sets: setsReducer,
@@ -60,6 +63,7 @@ const reducer = combineReducers({
     deleteTask: deleteTaskReducer,
     uploadProfilePicture: uploadProfilePictureReducer,
     uploadBoardImage: uploadBoardImageReducer,
+    canEdit: canEditReducer,
 });
 
 const storedUserInfo = localStorage.getItem("userInfo")
