@@ -2,8 +2,10 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import {
+    fetchMeReducer,
     updateMeReducer,
     userLoginReducer,
+    userLogoutReducer,
     userSignupReducer,
 } from "./reducers/userReducers";
 import {
@@ -14,8 +16,8 @@ import {
     fetchMyBoardsReducer,
     getBoardUsersReducer,
     joinBoardReducer,
+    leaveBoardReducer,
     updateBoardReducer,
-    updateBoardUsersReducer,
     updateUserBoardAccessReducer,
 } from "./reducers/boardReducers";
 import {
@@ -36,18 +38,21 @@ import {
     uploadBoardImageReducer,
     uploadProfilePictureReducer,
 } from "./reducers/uploadReducers";
-import { canEditReducer } from "./reducers/otherReducers";
+import { canEditReducer, isOwnerReducer } from "./reducers/otherReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userSignup: userSignupReducer,
+    userLogout: userLogoutReducer,
     updateMe: updateMeReducer,
+    fetchMe: fetchMeReducer,
     fetchMyBoards: fetchMyBoardsReducer,
     fetchFullBoard: fetchFullBoardReducer,
     createBoard: createBoardReducer,
     updateBoard: updateBoardReducer,
     deleteBoard: deleteBoardReducer,
     joinBoard: joinBoardReducer,
+    leaveBoard: leaveBoardReducer,
     joinBoardInfo: fetchJoinBoardInfoReducer,
     getBoardUsers: getBoardUsersReducer,
     updateUserBoardAccess: updateUserBoardAccessReducer,

@@ -7,7 +7,6 @@ import {
     Modal,
     TextField,
     Typography,
-    Menu,
     MenuItem,
 } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -17,9 +16,18 @@ import { useDispatch, useSelector } from "react-redux";
 import UserCard from "../common/UserCard";
 import {
     deleteBoardAction,
+    leaveBoardAction,
     updateBoardAction,
     updateUserBoardAccessAction,
 } from "../../actions/boardActions";
+import { history } from "../../history";
+import OutsideAlerter from "../../hooks/useOutsideListener";
+
+const accessOptions = [
+    { value: "view", name: "View" },
+    { value: "move", name: "Move" },
+    { value: "edit", name: "Edit" },
+];
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -52,14 +60,23 @@ const useStyles = makeStyles((theme) => ({
     access: {
         display: "flex",
         alignItems: "center",
+        position: "relative",
+    },
+    menu: {
+        display: "none",
+        position: "absolute",
+        right: theme.spacing(-0.5),
+        top: theme.spacing(-0.5),
+        zIndex: 100,
+    },
+    paper: {
+        backgroundColor: "#fff",
+        border: "2px solid #000",
+    },
+    menuShow: {
+        display: "block",
     },
 }));
-
-const accessOptions = [
-    { value: "view", name: "View" },
-    { value: "move", name: "Move" },
-    { value: "edit", name: "Edit" },
-];
 
 function BoardModal({ open, onClose, board }) {
     const classes = useStyles();
@@ -69,6 +86,9 @@ function BoardModal({ open, onClose, board }) {
     const { boardAccesses } = getBoardUsers;
 
     const { canEdit } = useSelector((state) => state.canEdit);
+
+    const leaveBoard = useSelector((state) => state.leaveBoard);
+    const { success: leaveSuccess } = leaveBoard;
 
     const [accessMenuAnchorEl, setAccessMenuAnchorEl] = useState(undefined);
 
@@ -83,6 +103,10 @@ function BoardModal({ open, onClose, board }) {
     useEffect(() => {
         setUserAccesses(boardAccesses);
     }, [boardAccesses]);
+
+    useEffect(() => {
+        if (leaveSuccess) history.push("/");
+    }, [leaveSuccess]);
 
     const saveHandler = (e) => {
         if (
@@ -113,9 +137,10 @@ function BoardModal({ open, onClose, board }) {
     };
 
     const handleAccessChange = (e, option, index) => {
+        console.log(index);
         const newUserAccesses = [...userAccesses];
         const newAccess = {
-            userRef: userAccesses[index],
+            userRef: userAccesses[index].userRef,
             access: option,
         };
         newUserAccesses[index] = newAccess;
@@ -133,6 +158,10 @@ function BoardModal({ open, onClose, board }) {
     const onCloseHandler = (e) => {
         setEditing(false);
         onClose();
+    };
+
+    const leaveHandler = (e) => {
+        dispatch(leaveBoardAction(board.id));
     };
 
     return (
@@ -161,12 +190,6 @@ function BoardModal({ open, onClose, board }) {
                                     >
                                         Save
                                     </Button>
-                                    <IconButton
-                                        onClick={deleteHandler}
-                                        className={classes.deleteIcon}
-                                    >
-                                        <DeleteForeverIcon color="error" />
-                                    </IconButton>
                                 </div>
                             </>
                         ) : (
@@ -188,10 +211,20 @@ function BoardModal({ open, onClose, board }) {
                                             >
                                                 <DeleteForeverIcon color="error" />
                                             </IconButton>
+                                            <Button
+                                                className={classes.deleteIcon}
+                                                onClick={leaveHandler}
+                                                endIcon={
+                                                    <ExitToAppIcon color="error" />
+                                                }
+                                            >
+                                                Leave
+                                            </Button>
                                         </>
                                     ) : (
                                         <Button
                                             className={classes.deleteIcon}
+                                            onClick={leaveHandler}
                                             endIcon={
                                                 <ExitToAppIcon color="error" />
                                             }
@@ -263,33 +296,47 @@ function BoardModal({ open, onClose, board }) {
                                     <>
                                         <Button
                                             onClick={(e) =>
-                                                setAccessMenuAnchorEl(e.target)
+                                                setAccessMenuAnchorEl(
+                                                    accessIndex
+                                                )
                                             }
                                         >
                                             {userAccesses[accessIndex].access}
                                         </Button>
-                                        <Menu
-                                            anchorEl={accessMenuAnchorEl}
-                                            open={Boolean(accessMenuAnchorEl)}
-                                            onClose={(e) =>
-                                                setAccessMenuAnchorEl(undefined)
+                                        <OutsideAlerter
+                                            onClose={() =>
+                                                setAccessMenuAnchorEl(null)
                                             }
                                         >
-                                            {accessOptions.map((option) => (
-                                                <MenuItem
-                                                    key={option.value}
-                                                    onClick={(e) =>
-                                                        handleAccessChange(
-                                                            e,
-                                                            option.value,
-                                                            accessIndex
-                                                        )
-                                                    }
-                                                >
-                                                    {option.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Menu>
+                                            <div
+                                                onMouseDown={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className={`${classes.menu} ${
+                                                    classes.paper
+                                                } ${
+                                                    accessMenuAnchorEl ===
+                                                    accessIndex
+                                                        ? classes.menuShow
+                                                        : ""
+                                                }`}
+                                            >
+                                                {accessOptions.map((option) => (
+                                                    <MenuItem
+                                                        key={option.value}
+                                                        onClick={(e) =>
+                                                            handleAccessChange(
+                                                                e,
+                                                                option.value,
+                                                                accessIndex
+                                                            )
+                                                        }
+                                                    >
+                                                        {option.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </div>
+                                        </OutsideAlerter>
                                     </>
                                 )}
                             </div>

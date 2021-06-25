@@ -6,6 +6,7 @@ import { requireAuth } from "../../middlewares/requireAuth";
 import {
     createUser,
     deleteUser,
+    fetchMe,
     getUserById,
     getUsers,
     login,
@@ -22,6 +23,7 @@ router.post("/auth/signup", signup);
 router.post("/auth/login", login);
 router.post("/auth/logout", logout);
 
+router.get("/me", currentUser, requireAuth, fetchMe);
 router.put("/update-me", currentUser, requireAuth, updateMe);
 
 //admin only

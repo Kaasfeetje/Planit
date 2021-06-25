@@ -130,3 +130,9 @@ export const updateMe = async (req: Request, res: Response) => {
 
     res.status(200).send({ data: user });
 };
+
+export const fetchMe = async (req: Request, res: Response) => {
+    const user = await User.findById(req.currentUser!.id);
+
+    res.status(200).send({ data: user });
+};

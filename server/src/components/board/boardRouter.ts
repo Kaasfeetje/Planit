@@ -11,6 +11,7 @@ import {
     getFullBoardById,
     getMyBoards,
     joinBoard,
+    leaveBoard,
     UpdateBoard,
     updateBoardsUserAccess,
 } from "./boardController";
@@ -34,6 +35,7 @@ router
 router.get("/:boardId/users", currentUser, requireAuth, getBoardsUsers);
 router.get("/:boardId/full", currentUser, requireAuth, getFullBoardById);
 router.post("/:boardId/join", currentUser, requireAuth, joinBoard);
+router.post("/:boardId/leave", currentUser, requireAuth, leaveBoard);
 router.get("/:boardId/join-info", currentUser, requireAuth, fetchJoinBoardInfo);
 router.put(
     "/:boardId/update-access",

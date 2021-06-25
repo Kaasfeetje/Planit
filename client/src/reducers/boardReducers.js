@@ -21,6 +21,9 @@ import {
     JOIN_BOARD_FAIL,
     JOIN_BOARD_REQUEST,
     JOIN_BOARD_SUCCESS,
+    LEAVE_BOARD_FAIL,
+    LEAVE_BOARD_REQUEST,
+    LEAVE_BOARD_SUCCESS,
     UPDATE_BOARD_ACCESS_FAIL,
     UPDATE_BOARD_ACCESS_REQUEST,
     UPDATE_BOARD_ACCESS_SUCCESS,
@@ -109,6 +112,19 @@ export const joinBoardReducer = (state = {}, action) => {
         case JOIN_BOARD_SUCCESS:
             return { loading: false, success: true };
         case JOIN_BOARD_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const leaveBoardReducer = (state = {}, action) => {
+    switch (action.type) {
+        case LEAVE_BOARD_REQUEST:
+            return { loading: true };
+        case LEAVE_BOARD_SUCCESS:
+            return { loading: false, success: true };
+        case LEAVE_BOARD_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

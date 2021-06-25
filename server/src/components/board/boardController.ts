@@ -163,6 +163,26 @@ export const joinBoard = async (req: Request, res: Response) => {
     res.status(201).send({ data: boardAccess });
 };
 
+export const leaveBoard = async (req: Request, res: Response) => {
+    const board = await Board.findById(req.params.boardId);
+    if (!board)
+        throw new NotFoundError(
+            `Did not find a board with id: ${req.params.boardId}`
+        );
+
+    const existingBoardAccess = await BoardAccess.findOne({
+        boardRef: board.id,
+        userRef: req.currentUser!.id,
+    });
+
+    if (!existingBoardAccess)
+        throw new BadRequestError("You have not joined this board.");
+
+    await existingBoardAccess.remove();
+
+    res.status(200).send({ data: {} });
+};
+
 export const hasBoardPermission = async (
     access_levels: board_access_levels[],
     userId: string,

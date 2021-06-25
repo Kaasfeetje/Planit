@@ -53,8 +53,8 @@ function BoardPage({ match }) {
         return () => {
             dispatch({ type: FETCH_FULL_BOARD_RESET });
         };
-    }, [dispatch, match]);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [match.params, match.path]);
     return (
         <div>
             <Header />

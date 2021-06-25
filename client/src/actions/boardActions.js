@@ -27,6 +27,9 @@ import {
     FETCH_JOIN_BOARD_REQUEST,
     FETCH_JOIN_BOARD_SUCCESS,
     FETCH_JOIN_BOARD_FAIL,
+    LEAVE_BOARD_REQUEST,
+    LEAVE_BOARD_SUCCESS,
+    LEAVE_BOARD_FAIL,
 } from "./types";
 
 export const fetchMyBoardsAction = () => async (dispatch) => {
@@ -199,6 +202,35 @@ export const joinBoardAction = (boardId) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: JOIN_BOARD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const leaveBoardAction = (boardId) => async (dispatch) => {
+    try {
+        dispatch({
+            type: LEAVE_BOARD_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                "content-type": "application/json",
+            },
+        };
+
+        const { data } = await axios.post(
+            `/api/v1/boards/${boardId}/leave`,
+            config
+        );
+
+        dispatch({ type: LEAVE_BOARD_SUCCESS, payload: data.data });
+    } catch (error) {
+        dispatch({
+            type: LEAVE_BOARD_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
