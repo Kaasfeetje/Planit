@@ -82,7 +82,7 @@ export const updateBoardReducer = (state = {}, action) => {
         case UPDATE_BOARD_REQUEST:
             return { loading: true };
         case UPDATE_BOARD_SUCCESS:
-            return { loading: false, board: action.payload };
+            return { loading: false, board: action.payload, success: true };
         case UPDATE_BOARD_FAIL:
             return { loading: false, error: action.payload };
         default:

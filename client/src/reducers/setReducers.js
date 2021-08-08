@@ -53,9 +53,9 @@ export const setsReducer = (state = { sets: [] }, action) => {
                 beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
             };
         case SWAP_SET_SUCCESS:
-            return { ...state, beforeSwap: undefined };
+            return { ...state, beforeSwap: undefined, swapSetSuccess: true };
         case SWAP_SET_FAIL:
-            return { ...state, sets: state.beforeSwap };
+            return { ...state, sets: state.beforeSwap, swapSetSuccess: false };
 
         //UPDATE SET
         case UPDATE_SET_SUCCESS:
@@ -83,7 +83,7 @@ export const createSetReducer = (state = {}, action) => {
                 loading: true,
             };
         case CREATE_SET_SUCCESS:
-            return { loading: false, set: action.payload };
+            return { loading: false, set: action.payload, success: true };
         case CREATE_SET_FAIL:
             return { loading: false, error: action.payload };
         default:
@@ -98,7 +98,7 @@ export const updateSetReducer = (state = {}, action) => {
                 loading: true,
             };
         case UPDATE_SET_SUCCESS:
-            return { loading: false, set: action.payload };
+            return { loading: false, set: action.payload, success: true };
         case UPDATE_SET_FAIL:
             return { loading: false, error: action.payload };
         default:

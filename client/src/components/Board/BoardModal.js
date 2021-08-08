@@ -286,7 +286,7 @@ function BoardModal({ open, onClose, board }) {
                         <Typography variant="body2" color="textSecondary">
                             Access:
                         </Typography>
-                        {boardAccesses.map((access, accessIndex) => (
+                        {boardAccesses?.map((access, accessIndex) => (
                             <div
                                 key={access.userRef.id}
                                 className={classes.access}

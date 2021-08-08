@@ -1,4 +1,9 @@
-import { Button, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+    Button,
+    makeStyles,
+    Paper,
+    Typography,
+} from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSetAction, swapSetsAction } from "../../actions/setActions";
@@ -7,6 +12,8 @@ import BoardModal from "./BoardModal";
 import { history } from "../../history";
 import { DELETE_BOARD_RESET } from "../../actions/types";
 import { switchTasksAction } from "../../actions/taskActions";
+
+
 
 const useStyles = makeStyles((theme) => ({
     set: {
@@ -65,6 +72,7 @@ function Board({ board, match }) {
 
     const _tasks = useSelector((state) => state.tasks);
     const { tasks } = _tasks;
+
 
     const setResponsibilities = useSelector(
         (state) => state.setResponsibilities

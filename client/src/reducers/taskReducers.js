@@ -58,9 +58,9 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
                 beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
             };
         case SWAP_TASK_SUCCESS:
-            return { ...state, beforeSwap: undefined };
+            return { ...state, beforeSwap: undefined, swapSuccess: true };
         case SWAP_TASK_FAIL:
-            return { ...state, tasks: state.beforeSwap };
+            return { ...state, tasks: state.beforeSwap, swapSuccess: false };
 
         //UPDATE TASK
         case UPDATE_TASK_SUCCESS:
@@ -98,9 +98,9 @@ export const tasksReducer = (state = { tasks: [] }, action) => {
                 beforeSwap: state.beforeSwap ? state.beforeSwap : state.tasks,
             };
         case SWITCH_TASK_SUCCESS:
-            return { ...state, beforeSwap: undefined };
+            return { ...state, beforeSwap: undefined, switchSuccess: true };
         case SWITCH_TASK_FAIL:
-            return { ...state, tasks: state.beforeSwap };
+            return { ...state, tasks: state.beforeSwap, switchSuccess: false };
 
         //RESET
         case FETCH_FULL_BOARD_RESET:
@@ -117,7 +117,7 @@ export const createTaskReducer = (state = {}, action) => {
                 loading: true,
             };
         case CREATE_TASK_SUCCESS:
-            return { loading: false, task: action.payload };
+            return { loading: false, task: action.payload, success: true };
         case CREATE_TASK_FAIL:
             return { loading: false, error: action.payload };
         default:
@@ -130,7 +130,7 @@ export const updateTaskReducer = (state = {}, action) => {
         case UPDATE_TASK_REQUEST:
             return { loading: true };
         case UPDATE_TASK_SUCCESS:
-            return { loading: false, task: action.payload };
+            return { loading: false, task: action.payload, success: true };
         case UPDATE_TASK_FAIL:
             return { loading: false, error: action.payload };
         default:

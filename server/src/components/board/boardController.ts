@@ -133,6 +133,8 @@ export const getFullBoardById = async (req: Request, res: Response) => {
     const sets = await Set.find({ boardRef: board.id }).populate("ownerRef");
     const tasks = await Task.find({ boardRef: board.id }).populate("ownerRef");
 
+    // throw new NotFoundError("This is a test error");
+
     res.status(200).send({ data: { board, sets, tasks } });
 };
 

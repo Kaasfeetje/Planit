@@ -69,7 +69,7 @@ function Set({
         dispatch(
             createTaskAction(
                 newTask,
-                tasks[tasks.length - 1].index + 1,
+                tasks[0] ? tasks[tasks.length - 1].index + 1 : 0,
                 set.boardRef,
                 set.id
             )

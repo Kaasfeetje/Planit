@@ -38,7 +38,7 @@ import {
     uploadBoardImageReducer,
     uploadProfilePictureReducer,
 } from "./reducers/uploadReducers";
-import { canEditReducer, isOwnerReducer } from "./reducers/otherReducers";
+import { canEditReducer } from "./reducers/otherReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,

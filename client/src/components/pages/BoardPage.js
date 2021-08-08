@@ -1,4 +1,5 @@
 import { CircularProgress, Container } from "@material-ui/core";
+
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Board from "../Board/Board";
@@ -13,6 +14,7 @@ import BoardJoinModal from "../Board/BoardJoinModal";
 import { history } from "../../history";
 import { getSetResponsibilitiesAction } from "../../actions/setActions";
 import { setCanEditAction } from "../../actions/otherActions";
+import BoardErrors from "../Board/BoardErrors";
 
 function BoardPage({ match }) {
     const dispatch = useDispatch();
@@ -57,6 +59,7 @@ function BoardPage({ match }) {
     }, [match.params, match.path]);
     return (
         <div>
+            <BoardErrors />
             <Header />
             <Container>
                 {loading && <CircularProgress />}
