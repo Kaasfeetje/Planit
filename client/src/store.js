@@ -39,6 +39,10 @@ import {
     uploadProfilePictureReducer,
 } from "./reducers/uploadReducers";
 import { canEditReducer } from "./reducers/otherReducers";
+import {
+    createBoardCommentReducer,
+    fetchBoardCommentsReducer,
+} from "./reducers/commentReducers";
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -53,6 +57,8 @@ const reducer = combineReducers({
     deleteBoard: deleteBoardReducer,
     joinBoard: joinBoardReducer,
     leaveBoard: leaveBoardReducer,
+    fetchBoardComments: fetchBoardCommentsReducer,
+    createBoardComment: createBoardCommentReducer,
     joinBoardInfo: fetchJoinBoardInfoReducer,
     getBoardUsers: getBoardUsersReducer,
     updateUserBoardAccess: updateUserBoardAccessReducer,

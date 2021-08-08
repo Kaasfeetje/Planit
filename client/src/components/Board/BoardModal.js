@@ -22,6 +22,7 @@ import {
 } from "../../actions/boardActions";
 import { history } from "../../history";
 import OutsideAlerter from "../../hooks/useOutsideListener";
+import BoardComments from "./BoardComments";
 
 const accessOptions = [
     { value: "view", name: "View" },
@@ -38,12 +39,15 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        overflowY: "scroll",
     },
     modalPaper: {
         backgroundColor: "#fff",
         border: "2px solid #000",
         padding: "2rem",
         width: "50vw",
+        height: "60vh",
+        overflowY: "scroll",
     },
     header: {
         display: "flex",
@@ -342,6 +346,7 @@ function BoardModal({ open, onClose, board }) {
                             </div>
                         ))}
                     </div>
+                    <BoardComments boardId={board.id} />
                 </div>
             </Fade>
         </Modal>

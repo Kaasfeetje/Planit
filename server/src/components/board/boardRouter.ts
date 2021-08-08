@@ -2,6 +2,11 @@ import express from "express";
 import { currentUser } from "../../middlewares/currentUser";
 import { requireAuth } from "../../middlewares/requireAuth";
 import {
+    createComment,
+    fetchBoardComments,
+    fetchComment,
+} from "../comment/commentController";
+import {
     CreateBoard,
     deleteBoard,
     fetchJoinBoardInfo,
@@ -42,6 +47,15 @@ router.put(
     currentUser,
     requireAuth,
     updateBoardsUserAccess
+);
+
+router.post("/:boardId/comments/", currentUser, requireAuth, createComment);
+router.get("/:boardId/comments/", currentUser, requireAuth, fetchBoardComments);
+router.get(
+    "/:boardId/comments/:commentId",
+    currentUser,
+    requireAuth,
+    fetchComment
 );
 
 export { router as boardRouter };

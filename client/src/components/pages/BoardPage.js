@@ -15,6 +15,7 @@ import { history } from "../../history";
 import { getSetResponsibilitiesAction } from "../../actions/setActions";
 import { setCanEditAction } from "../../actions/otherActions";
 import BoardErrors from "../Board/BoardErrors";
+import { fetchBoardCommentsAction } from "../../actions/commentActions";
 
 function BoardPage({ match }) {
     const dispatch = useDispatch();
@@ -50,6 +51,7 @@ function BoardPage({ match }) {
             dispatch(fetchFullBoardAction(match.params.boardId));
             dispatch(getBoardUsersAction(match.params.boardId));
             dispatch(getSetResponsibilitiesAction(match.params.boardId));
+            dispatch(fetchBoardCommentsAction(match.params.boardId));
         }
 
         return () => {

@@ -1,9 +1,4 @@
-import {
-    Button,
-    makeStyles,
-    Paper,
-    Typography,
-} from "@material-ui/core";
+import { Button, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSetAction, swapSetsAction } from "../../actions/setActions";
@@ -12,8 +7,6 @@ import BoardModal from "./BoardModal";
 import { history } from "../../history";
 import { DELETE_BOARD_RESET } from "../../actions/types";
 import { switchTasksAction } from "../../actions/taskActions";
-
-
 
 const useStyles = makeStyles((theme) => ({
     set: {
@@ -73,7 +66,6 @@ function Board({ board, match }) {
     const _tasks = useSelector((state) => state.tasks);
     const { tasks } = _tasks;
 
-
     const setResponsibilities = useSelector(
         (state) => state.setResponsibilities
     );
@@ -114,7 +106,10 @@ function Board({ board, match }) {
             setTaskDragging(undefined);
             if (taskDragging.setRef === set.id) return;
             const tempTasks = tasks.filter((t) => t.setRef === set.id);
-            const newIndex = tempTasks[tempTasks.length - 1].index + 1;
+            let newIndex = 0;
+            if (tempTasks.length !== 0)
+                newIndex = tempTasks[tempTasks.length - 1].index + 1;
+
             dispatch(switchTasksAction(taskDragging.id, set.id, newIndex));
         }
 

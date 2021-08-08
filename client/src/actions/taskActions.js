@@ -189,8 +189,6 @@ export const switchTasksAction = (taskId, setId, index) => async (dispatch) => {
             config
         );
 
-        console.log("test1");
-
         dispatch({ type: SWITCH_TASK_SUCCESS, payload: data.data });
     } catch (error) {
         dispatch({

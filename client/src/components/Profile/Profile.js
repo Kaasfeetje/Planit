@@ -112,7 +112,7 @@ function Profile() {
                         <>
                             <label htmlFor="profile-picture-file">
                                 <Avatar
-                                    src={profilePicture}
+                                    src={`${profilePicture}?${Date.now()}`}
                                     className={`${classes.largeAvatar} clickable`}
                                 />
                             </label>
