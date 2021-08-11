@@ -14,6 +14,7 @@ import Header from "../common/Header";
 import { loginAction } from "../../actions/userActions";
 import { history } from "../../history";
 import { USER_LOGIN_RESET } from "../../actions/types";
+import SuccessMessage from "../common/SuccessMessage";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -38,6 +39,8 @@ function LoginPage({ location }) {
     const userLogin = useSelector((state) => state.userLogin);
     const { loading, error, success } = userLogin;
 
+    const { success: logoutSuccess } = useSelector((state) => state.userLogout);
+
     const redirect = location.search ? location.search.split("=")[1] : "/";
 
     useEffect(() => {
@@ -55,6 +58,12 @@ function LoginPage({ location }) {
 
     return (
         <div>
+            <SuccessMessage
+                successMessage={
+                    logoutSuccess ? "Succesfully logged out." : false
+                }
+                autoHideDuration={3000}
+            />
             <Header />
             <Container className={classes.container} maxWidth="xs">
                 <form onSubmit={onSubmitHandler}>

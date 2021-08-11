@@ -1,4 +1,11 @@
-import { CircularProgress, Container, Grid } from "@material-ui/core";
+import {
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    makeStyles,
+    Typography,
+} from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BoardCard from "../Board/BoardCard";
@@ -8,7 +15,17 @@ import { history } from "../../history";
 import ErrorMessage from "../common/ErrorMessage";
 import SuccessMessage from "../common/SuccessMessage";
 
+const useStyles = makeStyles((theme) => ({
+    head: {
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: theme.spacing(2),
+        marginTop: theme.spacing(1),
+    },
+}));
+
 function HomePage() {
+    const classes = useStyles();
     const dispatch = useDispatch();
 
     const fetchMyBoards = useSelector((state) => state.fetchMyBoards);
@@ -56,6 +73,12 @@ function HomePage() {
             <Header />
             <Container>
                 {loading && <CircularProgress />}
+                <div className={classes.head}>
+                    <Typography variant="h5">Boards</Typography>
+                    <Button onClick={(e) => history.push("/create")}>
+                        Create board
+                    </Button>
+                </div>
                 <Grid container spacing={3}>
                     {renderedBoards}
                 </Grid>

@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
         padding: "0.25rem",
         textAlign: "center",
     },
+    completed: {
+        color: theme.palette.error.main,
+        borderColor: theme.palette.error.main,
+    },
 }));
 
 function Set({
@@ -80,7 +84,9 @@ function Set({
 
     return (
         <div
-            className={`${classes.set} set`}
+            className={`${classes.set} set ${
+                set.isCompleted ? classes.completed : ""
+            }`}
             draggable
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
